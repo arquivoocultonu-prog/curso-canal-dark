@@ -1,5 +1,6 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="icon" href="favicon.png" type="image/png"><link rel="apple-touch-icon" href="favicon.png">
 <meta name="description" content="Crie um canal dark do zero, sem aparecer, usando só o Claude e o ElevenLabs. Pagamento único de R$ 37,90.">
 <meta property="og:title" content="Curso Canal Dark com IA"><meta property="og:image" content="capa.jpg">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
@@ -61,6 +62,7 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke
 .preco{font:400 clamp(54px,10vw,78px)/1 var(--display);margin-top:6px;font-variant-numeric:tabular-nums}
 .preco small{font-size:.42em;vertical-align:.95em;margin-right:4px;color:var(--mute)}
 .unico{font:600 12px/1.4 var(--mono);letter-spacing:.14em;color:var(--mute);text-transform:uppercase;margin-top:8px}
+.taxa{font-size:13px;color:var(--mute);margin-top:6px}
 .dia{margin:16px auto 0;display:inline-flex;align-items:baseline;gap:8px;background:color-mix(in srgb,var(--red) 18%,var(--panel2));border-radius:12px;padding:10px 16px}
 .dia b{font:400 30px/1 var(--display);color:var(--rh);font-weight:400}
 .dia span{font-size:15px;color:#e4ddd4}
@@ -141,6 +143,7 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke
       <div class="de">De <s>R$ 89,70</s> por <span class="off">57% OFF</span></div>
       <div class="preco"><small>R$</small>37,90</div>
       <div class="unico">Pagamento único · sem mensalidade</div>
+      <div class="taxa">+ R$ 0,99 de taxa de serviço da plataforma de pagamento · total R$ 38,89</div>
       <div class="dia"><b>R$ 1,26</b><span>por dia no primeiro mês</span></div>
       <a class="bt comprar" href="#oferta" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5"/></svg>Quero acessar agora</a>
       <div class="pagto">
@@ -195,7 +198,7 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke
   <section class="wrap final">
     <div class="kick">Comece hoje</div>
     <h2>Seu canal dark em <span class="r">7 dias</span></h2>
-    <p>De <s>R$ 89,70</s> por R$ 37,90, uma única vez. O mesmo que R$ 1,26 por dia no primeiro mês.</p>
+    <p>De <s>R$ 89,70</s> por R$ 37,90, uma única vez. O mesmo que R$ 1,26 por dia no primeiro mês.<br><small>+ R$ 0,99 de taxa de serviço da plataforma de pagamento.</small></p>
     <a class="bt comprar" href="#oferta" target="_blank" rel="noopener">Quero acessar agora</a>
   </section>
 
@@ -203,7 +206,7 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke
 </main>
 
 <div class="barra" id="barra"><div class="wrap">
-  <div class="v"><s style="font-size:.6em;color:var(--mute)">R$ 89,70</s> R$ 37,90<small>pagamento único · R$ 1,26/dia no 1º mês</small></div>
+  <div class="v"><s style="font-size:.6em;color:var(--mute)">R$ 89,70</s> R$ 37,90<small>pagamento único · + R$ 0,99 de taxa</small></div>
   <a class="bt peq comprar" href="#oferta" target="_blank" rel="noopener">Quero acessar</a>
 </div></div>
 <div class="aviso" id="aviso" role="status" aria-live="polite"></div>
