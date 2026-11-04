@@ -1,0 +1,899 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head><body>
+<title>Canal Dark · Plataforma do Curso</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: ilha de edição de vídeo — hero com timeline animada, grade de módulos como "clipes",
+   e um player de leitura em tela cheia por módulo (aulas em HTML ou o PDF original). */
+:root{
+  --ink:#0b0b0c;      /* fundo do canal */
+  --panel:#141215;    /* superfícies */
+  --panel2:#1c191d;
+  --line:#2c272b;
+  --paper:#f0ebe3;    /* texto principal (creme do curso) */
+  --mute:#9a928c;
+  --red:#b3121f;      /* vermelho da marca, para preenchimentos */
+  --red-hi:#ee1c25;   /* vermelho vivo, legível sobre o escuro */
+  --ok:#3fbf7f;
+  --display:'Anton',Impact,'Arial Narrow',sans-serif;
+  --body:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--ink);color:var(--paper);font:400 16px/1.6 var(--body);margin:0;-webkit-font-smoothing:antialiased}
+body.travado{overflow:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--ink)}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--red-hi);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mono{font-family:var(--mono)}
+.kick{font:500 12px/1 var(--mono);letter-spacing:.24em;text-transform:uppercase;color:var(--red-hi)}
+svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* barra superior */
+.topo{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:color-mix(in srgb,var(--ink) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topo .wrap{display:flex;align-items:center;gap:16px;padding-block:12px}
+.marca{display:flex;align-items:center;gap:10px;font:400 19px/1 var(--display);letter-spacing:.02em;text-decoration:none}
+.marca .rec{width:10px;height:10px;border-radius:50%;background:var(--red-hi);box-shadow:0 0 0 4px color-mix(in srgb,var(--red) 35%,transparent);animation:rec 1.6s ease-in-out infinite}
+@keyframes rec{50%{opacity:.35}}
+.marca b{color:var(--red-hi);font-weight:400}
+.prog-geral{margin-left:auto;display:flex;align-items:center;gap:10px;font:500 12px/1 var(--mono);color:var(--mute);letter-spacing:.06em}
+.prog-geral .barra{width:120px;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.prog-geral .barra i{display:block;height:100%;width:0;background:var(--red-hi);transition:width .6s cubic-bezier(.2,.8,.2,1)}
+
+/* hero */
+.hero{padding-block:56px 40px;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+.hero h1{font:400 clamp(44px,7vw,84px)/.98 var(--display);margin:14px 0 0;letter-spacing:.005em;text-wrap:balance}
+.hero h1 span{display:block;animation:sobe 1s cubic-bezier(.2,.8,.2,1) backwards}
+.hero h1 span:nth-child(2){animation-delay:.15s}
+.hero h1 span:nth-child(3){animation-delay:.3s;color:var(--red-hi)}
+@keyframes sobe{from{transform:translateY(28px);opacity:0;filter:blur(6px)}}
+/* glitch de fita VHS no "CANAL DARK" */
+.glitch{position:relative}
+.glitch::before,.glitch::after{content:attr(data-t);position:absolute;inset:0;opacity:0;pointer-events:none}
+.glitch::before{color:var(--paper);animation:gl1 5s infinite 2s}
+.glitch::after{color:#7a0a13;animation:gl2 5s infinite 2s}
+@keyframes gl1{0%,86%,100%{opacity:0;transform:none}87%{opacity:.85;transform:translate(-4px,1px);clip-path:inset(12% 0 58% 0)}89%{opacity:.85;transform:translate(4px,-1px);clip-path:inset(62% 0 10% 0)}91%{opacity:.6;transform:translate(-2px,0);clip-path:inset(35% 0 40% 0)}92%{opacity:0}}
+@keyframes gl2{0%,86%,100%{opacity:0;transform:none}87%{opacity:.9;transform:translate(4px,-1px);clip-path:inset(55% 0 20% 0)}89%{opacity:.9;transform:translate(-5px,1px);clip-path:inset(8% 0 70% 0)}91%{opacity:.7;transform:translate(3px,0);clip-path:inset(40% 0 30% 0)}92%{opacity:0}}
+.glitch-on{animation:treme .25s steps(2) 1}
+@keyframes treme{50%{transform:translate(2px,-1px) skewX(-4deg)}}
+/* subtítulo palavra por palavra */
+.w{display:inline-block;animation:palavra .7s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(.55s + var(--d) * 32ms)}
+@keyframes palavra{from{opacity:0;transform:translateY(10px);filter:blur(5px)}}
+/* rótulo digitado */
+.digita::after{content:"";display:inline-block;width:.55em;height:1em;margin-left:4px;vertical-align:-2px;background:var(--red-hi);animation:pisca .8s steps(1) infinite}
+@keyframes pisca{50%{opacity:0}}
+/* revelar ao rolar */
+.rv-pre{opacity:0}
+.rv-in{animation:revela .8s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--k,0) * 80ms)}
+@keyframes revela{from{opacity:0;transform:translateY(30px);filter:blur(4px)}}
+.nums .n{font-variant-numeric:tabular-nums}
+/* garantia: depois da entrada, nada fica preso no meio da animação */
+.anim-fim .hero h1 span,.anim-fim .w,.rv-ok{animation:none!important;opacity:1!important;filter:none!important}
+/* fundo: ondas de narração + granulado de filme + linhas de vídeo */
+#fundo{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+.grao{position:fixed;inset:-50%;z-index:-1;pointer-events:none;opacity:.08;background-image:var(--grao,none);animation:grao 1s steps(6) infinite}
+@keyframes grao{0%{transform:translate(0,0)}20%{transform:translate(-7%,4%)}40%{transform:translate(5%,-6%)}60%{transform:translate(-4%,7%)}80%{transform:translate(6%,2%)}100%{transform:translate(0,0)}}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.022) 0 1px,transparent 1px 3px)}
+.varredura{position:fixed;left:0;right:0;height:120px;top:-120px;z-index:1;pointer-events:none;background:linear-gradient(to bottom,transparent,rgba(238,28,37,.05),transparent);animation:varre 9s linear infinite}
+@keyframes varre{to{transform:translateY(calc(100vh + 120px))}}
+.hero .sub{font-size:18px;color:#d9d2c9;max-width:34em;margin:20px 0 0}
+.acoes{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.bt{display:inline-flex;align-items:center;gap:9px;border-radius:999px;padding:12px 20px;font:600 14px/1 var(--body);border:1px solid var(--line);background:var(--panel2);text-decoration:none;transition:transform .2s,background .2s,border-color .2s}
+.bt:hover{transform:scale(1.07);border-color:var(--mute)}
+.bt:active{transform:scale(.97)}
+.bt.pri{box-shadow:0 0 0 0 color-mix(in srgb,var(--red-hi) 60%,transparent)}
+.bt.pri:hover{box-shadow:0 10px 30px -8px color-mix(in srgb,var(--red-hi) 70%,transparent)}
+.chip,.aba,.voltar,.copiar,.feito-bt,.lista-aulas button{transition:transform .2s cubic-bezier(.2,.8,.2,1),background .2s,border-color .2s,color .2s}
+.chip:hover,.voltar:hover,.copiar:hover,.feito-bt:hover,.aba:hover{transform:scale(1.07)}
+.lista-aulas button:hover{transform:translateX(3px)}
+.bt.pri{background:var(--red);border-color:var(--red);color:#fff}
+.bt.pri:hover{background:#cc1626;border-color:#cc1626}
+.bt svg.i{font-size:17px}
+.nums{display:flex;flex-wrap:wrap;gap:28px 36px;margin-top:36px}
+.nums .n{font:400 30px/1 var(--display);color:var(--red-hi)}
+.nums .l{font-size:13px;color:var(--mute);margin-top:6px}
+
+/* timeline do hero */
+.ilha{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;position:relative;overflow:hidden;min-width:0}
+.ilha .cab{display:flex;align-items:center;justify-content:space-between;font:500 11px/1 var(--mono);color:var(--mute);letter-spacing:.12em;margin-bottom:14px}
+.ilha .tc{color:var(--paper);font-variant-numeric:tabular-nums;font-size:13px;letter-spacing:.04em}
+.tela{aspect-ratio:16/9;max-width:100%;border-radius:8px;background:#060607;border:1px solid var(--line);position:relative;overflow:hidden;display:grid;place-items:center;margin-bottom:14px}
+.tela .cena{position:absolute;inset:0;display:none;place-content:center;text-align:center;padding:16px}
+.tela .cena.on{display:grid;animation:cena .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes cena{from{transform:scale(1.08)}}
+.tela .cena .t{font:400 clamp(22px,3.4vw,34px)/1.05 var(--display);letter-spacing:.01em}
+.tela .cena .t em{font-style:normal;color:var(--red-hi)}
+.tela .cena .s{font:500 10px/1 var(--mono);color:var(--mute);letter-spacing:.18em;margin-top:10px}
+.tela .safe{position:absolute;inset:8% 12%;border:1px dashed color-mix(in srgb,var(--mute) 30%,transparent);border-radius:4px;pointer-events:none}
+.trilhas{display:grid;gap:8px;position:relative}
+.trilha{display:grid;grid-template-columns:54px 1fr;gap:10px;align-items:center}
+.trilha .nm{font:500 10px/1 var(--mono);color:var(--mute);letter-spacing:.14em}
+.faixa{height:30px;border-radius:5px;background:var(--panel2);position:relative;overflow:hidden;display:flex;gap:2px;padding:0 2px;align-items:center}
+.faixa.cenas{gap:3px}
+.faixa.cenas div{height:22px;flex:1;border-radius:3px;background:color-mix(in srgb,var(--red) 55%,var(--panel2));display:flex;align-items:center;padding-left:5px;font:600 9px/1 var(--mono);color:#fff}
+.faixa.cenas div:nth-child(even){background:color-mix(in srgb,var(--red) 32%,var(--panel2))}
+.faixa.voz i,.faixa.trilha-m i{display:block;flex:1;background:var(--paper);opacity:.75;border-radius:1px;transform-origin:center}
+.faixa.voz i{animation:onda 1.1s ease-in-out infinite alternate}
+.faixa.trilha-m i{opacity:.32;animation:onda 2.4s ease-in-out infinite alternate}
+@keyframes onda{from{transform:scaleY(.35)}to{transform:scaleY(1)}}
+.cabeca{position:absolute;top:-4px;bottom:-4px;left:64px;width:2px;background:var(--red-hi);box-shadow:0 0 12px var(--red-hi);pointer-events:none}
+.cabeca::before{content:"";position:absolute;top:-2px;left:-5px;border:6px solid transparent;border-top-color:var(--red-hi)}
+
+/* fluxo */
+.fluxo{border-block:1px solid var(--line);background:var(--panel)}
+.fluxo .wrap{display:flex;gap:6px;overflow-x:auto;padding-block:16px;scrollbar-width:none}
+.fluxo .wrap::-webkit-scrollbar{display:none}
+.passo{display:flex;align-items:center;gap:8px;white-space:nowrap;font:500 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute);padding:9px 12px;border-radius:999px;border:1px solid transparent;transition:color .3s,border-color .3s,background .3s}
+.passo.on{color:var(--paper);border-color:var(--red);background:color-mix(in srgb,var(--red) 18%,transparent)}
+.seta{color:var(--line);align-self:center}
+
+/* módulos */
+.secao{padding-block:64px 24px}
+.secao h2{font:400 clamp(32px,4.4vw,48px)/1.05 var(--display);margin:10px 0 8px;text-wrap:balance}
+.secao .intro{color:var(--mute);max-width:42em;margin:0}
+.filtros{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:8px 14px;font:500 12px/1 var(--mono);letter-spacing:.08em;color:var(--mute);transition:all .2s}
+.chip[aria-pressed="true"]{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:26px}
+.card{position:relative;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 22px 18px;display:flex;flex-direction:column;gap:14px;min-width:0;transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .3s,box-shadow .35s}
+.card:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--red-hi) 60%,var(--line));box-shadow:0 18px 40px -20px color-mix(in srgb,var(--red) 70%,transparent)}
+.card[hidden]{display:none}
+.card .topo-c{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.ico{width:52px;height:52px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--red) 16%,var(--panel2));color:var(--red-hi);font-size:26px;transition:transform .4s cubic-bezier(.2,.8,.2,1),background .3s}
+.card:hover .ico{transform:rotate(-6deg) scale(1.08);background:var(--red);color:#fff}
+.num{font:400 64px/.8 var(--display);color:var(--panel2);-webkit-text-stroke:1px var(--line);transition:color .3s}
+.card:hover .num{color:color-mix(in srgb,var(--red) 22%,var(--panel2))}
+.card h3{font:400 24px/1.1 var(--display);margin:0;letter-spacing:.01em;text-wrap:balance}
+.card p{margin:0;color:var(--mute);font-size:14.5px;line-height:1.55}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;font:500 11.5px/1.2 var(--mono);color:var(--mute);letter-spacing:.06em}
+.meta span{display:inline-flex;align-items:center;gap:6px}
+.mini{height:4px;border-radius:2px;background:var(--line);overflow:hidden}
+.mini i{display:block;height:100%;width:0;background:var(--ok);transition:width .6s}
+.card .pe{display:flex;gap:8px;margin-top:auto;padding-top:4px}
+.card .pe .bt{padding:10px 14px;font-size:13px}
+.card .pe .bt.abrir{flex:1;justify-content:center}
+.estado{font:600 10.5px/1 var(--mono);letter-spacing:.14em;padding:5px 8px;border-radius:4px;background:var(--panel2);color:var(--mute)}
+.estado.feito{background:color-mix(in srgb,var(--ok) 20%,transparent);color:var(--ok)}
+.estado.andando{background:color-mix(in srgb,var(--red) 22%,transparent);color:var(--red-hi)}
+.card.completo-curso{background:linear-gradient(160deg,color-mix(in srgb,var(--red) 34%,var(--panel)) 0%,var(--panel) 70%)}
+.card.completo-curso .txt{display:grid;gap:8px}
+
+/* como funciona */
+.cada{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:26px}
+.cada div{background:var(--panel);padding:20px}
+.cada .ico{width:40px;height:40px;font-size:20px;border-radius:10px;margin-bottom:12px}
+.cada b{display:block;font:400 18px/1.2 var(--display);letter-spacing:.02em;margin-bottom:4px;font-weight:400}
+.cada span{color:var(--mute);font-size:14px}
+.rodape{padding-block:48px 64px;color:var(--mute);font-size:13px;border-top:1px solid var(--line);margin-top:56px}
+
+/* player do módulo */
+.player{position:fixed;inset:0;z-index:70;background:var(--ink);display:flex;flex-direction:column;animation:abre .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes abre{from{transform:translateY(24px)}}
+.player[hidden]{display:none!important}
+.pbar{border-bottom:1px solid var(--line);background:var(--panel);padding-top:env(safe-area-inset-top,0px)}
+.pbar .wrap{display:flex;align-items:center;gap:14px;padding-block:12px;flex-wrap:wrap}
+.voltar{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:transparent;border-radius:999px;padding:8px 14px;font:500 13px/1 var(--body)}
+.voltar:hover{border-color:var(--mute)}
+.ptit{min-width:0;flex:1}
+.ptit .kick{font-size:11px}
+.ptit h2{font:400 22px/1.15 var(--display);margin:4px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.abas{display:flex;background:var(--ink);border:1px solid var(--line);border-radius:999px;padding:3px}
+.aba{border:0;background:transparent;border-radius:999px;padding:8px 14px;font:600 13px/1 var(--body);color:var(--mute);display:inline-flex;gap:7px;align-items:center}
+.aba[aria-selected="true"]{background:var(--paper);color:var(--ink)}
+.pcorpo{flex:1;overflow-y:auto;overscroll-behavior:contain;scroll-behavior:smooth}
+.pcorpo .wrap{display:grid;grid-template-columns:260px minmax(0,1fr);gap:40px;padding-block:28px calc(48px + env(safe-area-inset-bottom,0px))}
+.lado{position:sticky;top:20px;align-self:start;display:grid;gap:14px}
+.lado .cx{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+.anel{display:flex;align-items:center;gap:12px}
+.anel svg{width:54px;height:54px;transform:rotate(-90deg)}
+.anel circle{fill:none;stroke-width:5}
+.anel .fundo{stroke:var(--line)}
+.anel .frente{stroke:var(--ok);stroke-linecap:round;transition:stroke-dashoffset .6s}
+.anel b{display:block;font:400 20px/1 var(--display);font-weight:400}
+.anel span{font-size:12px;color:var(--mute)}
+.lista-aulas{display:grid;gap:2px}
+.lista-aulas button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:transparent;border-radius:8px;padding:9px 10px;font:500 13.5px/1.3 var(--body);color:var(--mute)}
+.lista-aulas button:hover{background:var(--panel2);color:var(--paper)}
+.lista-aulas button.atual{background:var(--panel2);color:var(--paper)}
+.lista-aulas .bol{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;flex:none;font-size:11px;color:transparent;transition:all .3s}
+.lista-aulas button.feita .bol{background:var(--ok);border-color:var(--ok);color:var(--ink)}
+.lista-aulas .id{font:600 11px/1 var(--mono);color:var(--red-hi);width:26px;flex:none}
+.lista-aulas .nm{font:400 13.5px/1.25 var(--display);letter-spacing:.03em}
+.lado .bt{width:100%;justify-content:center}
+.nav-mod{display:flex;gap:8px}
+.nav-mod .bt{flex:1;padding:10px;font-size:12.5px}
+
+.conteudo{min-width:0;max-width:760px}
+.ao-final{background:var(--panel);border-left:3px solid var(--red-hi);padding:14px 18px;border-radius:0 10px 10px 0;margin-bottom:8px}
+.aula{padding-block:30px 8px;border-bottom:1px solid var(--line);scroll-margin-top:12px}
+.aula h3{font:400 clamp(24px,3vw,30px)/1.12 var(--display);margin:0 0 4px;letter-spacing:.01em;text-wrap:balance}
+.aula h3 .id{color:var(--red-hi)}
+.dur{display:inline-flex;align-items:center;gap:6px;font:500 11.5px/1 var(--mono);color:var(--mute);letter-spacing:.1em}
+.rot{font:500 11px/1 var(--mono);letter-spacing:.2em;color:var(--mute);text-transform:uppercase;margin:22px 0 10px;display:flex;align-items:center;gap:8px}
+.tempos{list-style:none;margin:0;padding:0;display:grid;gap:2px;position:relative}
+.tempos li{display:grid;grid-template-columns:52px 1fr;gap:12px;padding:7px 0;align-items:baseline}
+.tempos .t{font:600 12.5px/1 var(--mono);color:var(--red-hi);font-variant-numeric:tabular-nums}
+.tempos.sem-t li{grid-template-columns:14px 1fr}
+.tempos.sem-t .t{width:6px;height:6px;border-radius:50%;background:var(--red-hi);align-self:center}
+b,strong{font-weight:700;color:#fff}
+.tabela-x{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:14.5px}
+th{font:500 11px/1 var(--mono);letter-spacing:.14em;color:var(--mute);text-align:left;padding:12px 14px;background:var(--panel)}
+td{padding:12px 14px;border-top:1px solid var(--line);vertical-align:top;line-height:1.5}
+.prompt{position:relative;background:#070708;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.prompt .pc{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 8px 8px 14px;border-bottom:1px solid var(--line);background:var(--panel);font:500 11px/1 var(--mono);letter-spacing:.14em;color:var(--mute)}
+.prompt .pc .pts{display:flex;gap:5px;margin-right:6px}
+.prompt .pc .pts i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.prompt .pc .pts i:first-child{background:var(--red)}
+.copiar{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel2);border-radius:6px;padding:7px 11px;font:600 12px/1 var(--body);letter-spacing:0;color:var(--paper);transition:all .2s}
+.copiar:hover{border-color:var(--mute)}
+.copiar.ok{background:var(--ok);border-color:var(--ok);color:var(--ink)}
+.prompt pre{margin:0;padding:16px 18px;font:400 13.5px/1.7 var(--mono);color:#e9e3da;white-space:pre-wrap;overflow-wrap:anywhere}
+.prompt pre .ph{color:var(--red-hi)}
+.nota{font-size:14px;color:var(--mute);margin-top:10px}
+.tarefa{margin-top:22px;border:1px solid color-mix(in srgb,var(--red) 55%,var(--line));background:color-mix(in srgb,var(--red) 12%,var(--panel));border-radius:12px;padding:16px 18px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.tarefa .tx{flex:1;min-width:220px}
+.tarefa .tl{font:600 11px/1 var(--mono);letter-spacing:.2em;color:var(--red-hi);margin-bottom:6px}
+.feito-bt{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--ink);border-radius:999px;padding:10px 16px;font:600 13px/1 var(--body);transition:all .25s}
+.feito-bt .bol{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--mute);display:grid;place-items:center;font-size:11px;color:transparent;transition:all .25s}
+.feito-bt[aria-pressed="true"]{border-color:var(--ok);color:var(--ok)}
+.feito-bt[aria-pressed="true"] .bol{background:var(--ok);border-color:var(--ok);color:var(--ink);animation:pop .35s}
+@keyframes pop{50%{transform:scale(1.3)}}
+.so-concluir{margin-top:22px}
+.check{margin-top:30px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+.check h4{font:400 22px/1 var(--display);margin:0 0 12px;font-weight:400;letter-spacing:.02em}
+.check label{display:flex;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line);cursor:pointer}
+.check label:first-of-type{border-top:0}
+.check input{appearance:none;width:20px;height:20px;border-radius:5px;border:1.5px solid var(--mute);display:grid;place-items:center;margin:0;flex:none;transition:all .2s}
+.check input:checked{background:var(--ok);border-color:var(--ok)}
+.check input:checked::after{content:"";width:5px;height:10px;border:solid var(--ink);border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.check input:checked + span{color:var(--mute);text-decoration:line-through}
+
+/* videoaula do módulo */
+.videoaula{margin-bottom:22px}
+.videoaula .rot{margin-top:0}
+.videoaula video{display:block;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:12px;background:#000;border:1px solid var(--line);box-shadow:0 18px 40px -20px color-mix(in srgb,var(--red) 60%,transparent)}
+/* blocos do formato novo */
+.par{margin:0 0 12px}
+.subt{font:400 21px/1.2 var(--display);letter-spacing:.02em;margin:28px 0 8px;font-weight:400}
+ul.porque{margin:0;padding-left:20px;display:grid;gap:8px}
+ul.porque li::marker{color:var(--red-hi)}
+ol.passos{list-style:none;margin:0;padding:0;counter-reset:p;display:grid;gap:10px}
+ol.passos li{counter-increment:p;position:relative;padding-left:38px;min-height:26px}
+ol.passos li::before{content:counter(p);position:absolute;left:0;top:-1px;width:26px;height:26px;border-radius:50%;background:var(--red);color:#fff;font:600 12px/26px var(--mono);text-align:center}
+.exemplo{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel)}
+.exg{display:grid;grid-template-columns:1fr 1fr}
+.exg.pilha{grid-template-columns:1fr}
+.exa,.exd{padding:16px 18px;min-width:0}
+.exa{background:color-mix(in srgb,var(--panel2) 70%,var(--ink));color:#cfc8c0}
+.exd{border-left:3px solid var(--red-hi)}
+.exg.pilha .exd{border-left:0;border-top:3px solid var(--red-hi)}
+.exl{font:600 11px/1 var(--mono);letter-spacing:.18em;color:var(--mute);margin-bottom:10px}
+.exd .exl{color:var(--red-hi)}
+.exa p,.exd p{margin:0;font-size:15px}
+.expre{margin:0;font:400 13px/1.65 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;color:#e9e3da}
+.exextra{border-top:1px solid var(--line);padding:14px 18px}
+.exextra .nota{margin-top:0}
+.pre-cl{background:#070708;border:1px solid var(--line);border-radius:10px;padding:14px 16px;font:400 13px/1.65 var(--mono);color:#e9e3da;overflow-x:auto;margin:12px 0 0}
+.erros{display:grid;gap:8px}
+.erro{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:0 16px;transition:border-color .2s}
+.erro[open]{border-color:color-mix(in srgb,var(--red-hi) 50%,var(--line))}
+.erro summary{list-style:none;cursor:pointer;display:flex;gap:12px;align-items:baseline;padding:13px 0;font-size:15px}
+.erro summary::-webkit-details-marker{display:none}
+.erro summary::after{content:"+";margin-left:auto;color:var(--mute);font:500 18px/1 var(--mono);transition:transform .25s}
+.erro[open] summary::after{transform:rotate(45deg)}
+.erro .xx{color:var(--red-hi);font-weight:700}
+.erro p{margin:0 0 10px 26px;color:#d9d2c9;font-size:15px}
+.erro .ev span{font:600 11px/1 var(--mono);letter-spacing:.12em;color:var(--ok);text-transform:uppercase}
+.check-aula{margin-top:16px}
+.check-aula h4{font-size:18px}
+@media (max-width:640px){.exg{grid-template-columns:1fr}.exd{border-left:0;border-top:3px solid var(--red-hi)}}
+.pdfbox{max-width:860px}
+.pdfbox .aviso{color:var(--mute);font-size:14px;margin:0 0 14px}
+.paginas{display:grid;gap:14px}
+.paginas canvas{width:100%;height:auto;display:block;border-radius:4px;background:#fff;box-shadow:0 10px 30px -12px #000}
+.carregando{display:flex;align-items:center;gap:12px;color:var(--mute);font:500 13px/1 var(--mono);padding:30px 0}
+.carregando i{width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--red-hi);border-radius:50%;animation:gira .8s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);opacity:0;background:var(--paper);color:var(--ink);padding:11px 18px;border-radius:999px;font:600 13.5px/1.2 var(--body);z-index:90;transition:all .3s;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
+.toast.on{transform:translate(-50%,0);opacity:1}
+.so-dl[hidden]{display:none!important}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr;gap:32px;padding-block:36px 28px}
+  .pcorpo .wrap{grid-template-columns:1fr;gap:20px}
+  .lado{position:static}
+  .lista-aulas{grid-auto-flow:column;grid-auto-columns:max-content;overflow-x:auto;padding-bottom:4px}
+  .lista-aulas button .nm{display:none}
+}
+@media (max-width:560px){
+  .prog-geral .barra{width:64px}
+  .grade{grid-template-columns:1fr}
+  .ptit h2{font-size:18px}
+  .abas{order:3;width:100%}
+  .aba{flex:1;justify-content:center}
+  .tempos li{grid-template-columns:44px 1fr;gap:8px}
+  .num{font-size:52px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+</style>
+
+<canvas id="fundo" aria-hidden="true"></canvas>
+<div class="grao" aria-hidden="true"></div>
+<div class="varredura" aria-hidden="true"></div>
+
+<header class="topo">
+  <div class="wrap">
+    <a class="marca" href="#"><span class="rec"></span>CANAL <b>DARK</b></a>
+    <div class="prog-geral" title="Aulas concluídas neste navegador">
+      <span id="pg-txt">0/0 AULAS</span><span class="barra"><i id="pg-bar"></i></span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <div>
+      <div class="kick">Curso · Canal dark com inteligência artificial</div>
+      <h1><span>CURSO PARA</span><span>CRIAÇÃO DE VÍDEO</span><span class="glitch" data-t="E CANAL DARK">E CANAL DARK</span></h1>
+      <p class="sub">Do zero ao primeiro vídeo postado em 7 dias. Sem aparecer, sem saber editar e com a IA fazendo o trabalho pesado. Só duas ferramentas: o Claude e o ElevenLabs.</p>
+      <div class="acoes">
+        <a class="bt pri" href="#modulo-0"><svg class="i" viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5z"/></svg>Começar pelo Módulo 0</a>
+        <button class="bt so-dl" type="button" data-dl="curso-canal-dark" hidden><svg class="i" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19h14"/></svg>Baixar o curso completo</button>
+      </div>
+      <div class="nums">
+        <div><div class="n"><span data-conta="7">7</span></div><div class="l">módulos objetivos</div></div>
+        <div><div class="n"><span data-conta="33">33</span></div><div class="l">aulas práticas</div></div>
+        <div><div class="n"><span data-conta="35" id="n-prompts">35</span></div><div class="l">prompts prontos para copiar</div></div>
+        <div><div class="n"><span data-conta="15">15</span> MIN</div><div class="l">de tarefa prática por aula</div></div>
+      </div>
+    </div>
+
+    <div class="ilha" aria-hidden="true">
+      <div class="cab"><span>PROJETO · VÍDEO 01 · 9:16</span><span class="tc" id="tc">00:00:00</span></div>
+      <div class="tela">
+        <div class="safe"></div>
+        <div class="cena on"><div class="t">HACKERS LEVARAM<br><em>1,5 BILHÃO</em></div><div class="s">CENA 01 · GANCHO</div></div>
+        <div class="cena"><div class="t">DE UMA SÓ<br><em>CORRETORA</em></div><div class="s">CENA 02 · CONTEXTO</div></div>
+        <div class="cena"><div class="t">COMO ISSO<br><em>ACONTECEU?</em></div><div class="s">CENA 03 · INVESTIGAÇÃO</div></div>
+        <div class="cena"><div class="t">O ERRO ESTAVA<br><em>NA ASSINATURA</em></div><div class="s">CENA 04 · REVELAÇÃO</div></div>
+        <div class="cena"><div class="t">E VOCÊ,<br><em>CONFIARIA?</em></div><div class="s">CENA 05 · CHAMADA</div></div>
+      </div>
+      <div class="trilhas">
+        <div class="trilha"><span class="nm">CENAS</span><div class="faixa cenas"><div>01</div><div>02</div><div>03</div><div>04</div><div>05</div></div></div>
+        <div class="trilha"><span class="nm">VOZ</span><div class="faixa voz" id="f-voz"></div></div>
+        <div class="trilha"><span class="nm">TRILHA</span><div class="faixa trilha-m" id="f-tri"></div></div>
+        <div class="cabeca" id="cabeca"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="fluxo"><div class="wrap" id="fluxo"></div></div>
+
+  <section class="wrap secao" id="modulos">
+    <div class="kick">Os módulos</div>
+    <h2>Escolha o módulo e comece agora</h2>
+    <p class="intro">Abra qualquer módulo para ler as aulas aqui mesmo, copiar os prompts com um clique e marcar as tarefas feitas. Prefere o material original? Veja o PDF dentro da página ou baixe.</p>
+    <div class="filtros" role="group" aria-label="Filtrar módulos">
+      <button class="chip" type="button" data-f="todos" aria-pressed="true">Todos</button>
+      <button class="chip" type="button" data-f="pendentes" aria-pressed="false">Não concluídos</button>
+      <button class="chip" type="button" data-f="claude" aria-pressed="false">Claude</button>
+      <button class="chip" type="button" data-f="elevenlabs" aria-pressed="false">ElevenLabs</button>
+    </div>
+    <div class="grade" id="grade"></div>
+  </section>
+
+  <section class="wrap secao">
+    <div class="kick">Como funciona</div>
+    <h2>Cada aula traz</h2>
+    <div class="cada" id="cada"></div>
+  </section>
+
+  <footer class="wrap rodape">
+    <p id="nota-rodape"></p>
+    <p>Seu progresso fica salvo só neste navegador.</p>
+  </footer>
+</main>
+
+<div class="player" id="player" hidden role="dialog" aria-modal="true" aria-labelledby="p-titulo">
+  <div class="pbar">
+    <div class="wrap">
+      <button class="voltar" type="button" id="p-voltar"><svg class="i" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>Módulos</button>
+      <div class="ptit"><div class="kick" id="p-kick"></div><h2 id="p-titulo"></h2></div>
+      <div class="abas" role="tablist">
+        <button class="aba" type="button" role="tab" id="aba-aulas" aria-selected="true"><svg class="i" viewBox="0 0 24 24"><path d="M5 5h14M5 10h14M5 15h9M5 20h6"/></svg>Aulas</button>
+        <button class="aba" type="button" role="tab" id="aba-pdf" aria-selected="false"><svg class="i" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/></svg>PDF</button>
+      </div>
+    </div>
+  </div>
+  <div class="pcorpo" id="pcorpo">
+    <div class="wrap">
+      <aside class="lado">
+        <div class="cx anel">
+          <svg viewBox="0 0 54 54"><circle class="fundo" cx="27" cy="27" r="22"/><circle class="frente" id="anel" cx="27" cy="27" r="22" stroke-dasharray="138.2" stroke-dashoffset="138.2"/></svg>
+          <div><b id="anel-txt">0/0</b><span>aulas concluídas</span></div>
+        </div>
+        <nav class="cx lista-aulas" id="lista-aulas" aria-label="Aulas do módulo"></nav>
+        <button class="bt so-dl" type="button" id="p-dl" hidden><svg class="i" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19h14"/></svg>Baixar PDF do módulo</button>
+        <div class="nav-mod"><a class="bt" id="p-ant" href="#">← Anterior</a><a class="bt" id="p-prox" href="#">Próximo →</a></div>
+      </aside>
+      <div class="conteudo" id="p-aulas"></div>
+      <div class="pdfbox" id="p-pdf" hidden></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const DADOS = {"curso":{"titulo":"Curso para Criação de Vídeo e Canal Dark","rodape":"CURSO PARA CRIAÇÃO DE VÍDEO E CANAL DARK","capa":{"rotulo":"CURSO · CANAL DARK COM INTELIGÊNCIA ARTIFICIAL","sub":"Do zero ao primeiro vídeo postado em 7 dias. Sem aparecer,\u003cbr>sem saber editar e com a IA fazendo o trabalho pesado.","numeros":[["7","módulos objetivos"],["33","aulas práticas"],["15 MIN","de tarefa prática por aula"]]},"comoFunciona":{"intro":"Cada módulo tem **uma videoaula curta**, de 1 a 2 minutos, com a visão geral. **Este material é onde você aprende de verdade:** leia com o Claude aberto do lado e faça cada tarefa na hora. Ao fim de cada módulo, uma parte do seu canal fica pronta.","itens":["**Por que isso importa:** o motivo de cada passo, em poucas frases.","**Exemplo prático:** antes e depois, aplicado a um canal dark.","**Prompt pronto:** para copiar no Claude ou no ElevenLabs. Troque o que está entre [colchetes].","**Erros comuns:** o que costuma dar errado e como evitar.","**Tarefa de 15 minutos:** o que você faz antes de seguir.","**Checklist:** o que você deve ter pronto no fim da aula."],"nota":"Requisitos de monetização, limites de caracteres e recursos das plataformas mudam com frequência. Sempre confira a página oficial de cada rede antes de aplicar. Números e horários citados como \"recomendação geral\" são pontos de partida, não regras."}},"modulos":[{"n":0,"titulo":"COMECE AQUI","capaTitulo":["COMECE AQUI"],"arquivo":"modulo-0-comece-aqui","meta":"CERCA DE 40 MINUTOS COM AS TAREFAS","resumo":"O caminho completo de um vídeo, o formato do seu canal e as ferramentas prontas.","aoFinal":"você entende o caminho completo de um vídeo, decide o formato do seu canal e deixa as ferramentas prontas para usar.","aulas":[{"id":"0.1","titulo":"O QUE É UM CANAL DARK E COMO ELE FUNCIONA","blocos":[{"t":"p","x":"Canal dark é um canal em que você não aparece. Não tem rosto nem câmera. A estrela é a história, contada com narração, texto na tela e animações simples."},{"t":"porque","itens":["**Quem assiste quer a história, não quem conta.** Se o assunto prende, ninguém sente falta de um rosto.","**Sem câmera, você produz em qualquer lugar.** Não precisa de cenário, de luz nem de coragem para gravar.","**Um formato fixo vira linha de produção.** Quando todo vídeo segue o mesmo molde, o décimo sai muito mais rápido que o primeiro."]},{"t":"sub","x":"O caminho de todo vídeo"},{"t":"p","x":"Você monta a identidade do canal uma única vez (Módulo 1). Depois disso, todo vídeo passa pelas mesmas 7 etapas:"},{"t":"tabela","cab":["ETAPA","O QUE ACONTECE","QUEM FAZ","MÓDULO"],"larg":["17%","43%","27%","13%"],"linhas":[["**1. Ideia**","Escolher um assunto que vire uma pergunta","Você + Claude","2"],["**2. Roteiro**","Escrever o texto, dividido em cenas","Claude, você revisa","2"],["**3. Voz**","Narrar cada cena e criar a trilha","ElevenLabs, pedido pelo Claude","3"],["**4. Edição**","Montar o vídeo animado","Claude","4"],["**5. Capa**","Criar thumbnail e capa vertical","Claude","4"],["**6. Postagem**","Publicar com título e legenda","Você posta, o Claude escreve","5"],["**7. Análise**","Ver onde as pessoas pararam de assistir","Você, com ajuda do Claude","5"]]},{"t":"sub","x":"Por que a curadoria é sua"},{"t":"p","x":"A IA acelera, mas também erra fatos e tende a produzir textos parecidos. Plataformas como o YouTube costumam não monetizar conteúdo repetitivo ou sem valor próprio. Por isso três coisas ficam sempre com você: **escolher o assunto, conferir os fatos e aprovar o resultado.**"},{"t":"exemplo","antes":"\"Quero um canal de curiosidades.\"\nIsso não diz o assunto, o jeito de contar nem o tamanho do vídeo. Cada vídeo sairia diferente, e o canal não ganharia identidade.","depois":"\"Golpes que pararam o mundo: em 60 a 90 segundos, um golpe financeiro real contado como investigação: o crime, a pista e o desfecho.\"\nAgora estão definidos o assunto (golpes financeiros reais), o ângulo (investigação), a duração e a estrutura de todo vídeo.","extra":[{"t":"p","x":"**Um vídeo desse canal passando pelas 7 etapas** (exemplo ilustrativo):"},{"t":"passos","semRotulo":true,"itens":["**Ideia:** \"Como hackers levaram 1,5 bilhão de dólares de uma só corretora?\"","**Roteiro:** 7 cenas: gancho, contexto, como o ataque aconteceu, a pista, a revelação e uma pergunta final.","**Voz:** voz grave e calma, gerada cena por cena.","**Edição:** texto curto na tela e um ícone por cena, com a palavra-chave em vermelho.","**Capa:** \"1,5 BILHÃO\" em letras grandes e um cadeado quebrado.","**Postagem:** título com a palavra-chave no começo e legenda com as fontes.","**Análise:** muita gente saiu na cena 3, longa demais. No próximo vídeo, o contexto fica mais curto."]}]},{"t":"prompt","x":"Você é meu mentor para criar um canal dark (vídeos sem aparecer, com narração e animações).\nVou usar só o Claude e o ElevenLabs.\n\nO tipo de vídeo que eu gostaria de assistir todo dia: [descreva em 1 ou 2 frases]\nAssuntos de que eu gosto: [2 a 4 assuntos]\nTempo que tenho por semana: [horas]\n\nFaça o seguinte, em linguagem simples:\n1. Transforme meu gosto em 3 opções de FORMATO, cada uma em uma frase com:\n   assunto + jeito de contar + duração + estrutura de todo vídeo.\n2. Para cada formato, dê 3 títulos de vídeo de exemplo.\n3. Escolha o formato mais fácil de repetir toda semana e mostre como UM vídeo dele\n   passaria pelas 7 etapas: ideia, roteiro, voz, edição, capa, postagem e análise\n   (uma linha por etapa).\n4. Diga o que eu preciso decidir e conferir pessoalmente e o que a IA pode fazer por mim.\n5. Termine com 3 perguntas que eu devo responder antes de criar a identidade do canal."},{"t":"erros","itens":[["Achar que canal dark é postar qualquer coisa gerada por IA.","Conteúdo genérico costuma não crescer e pode ser recusado na monetização.","escolha os assuntos, pesquise e confira os fatos você mesmo."],["Mudar de assunto e de estilo a cada vídeo.","O público não sabe o que esperar do canal.","defina um formato e repita. Como recomendação geral, só mude depois de ver os números dos primeiros vídeos."],["Copiar vídeo de outro canal (reenviar, traduzir ao pé da letra, refazer igual).","Isso pode derrubar o canal.","use outros canais para estudar o formato, nunca para pegar o conteúdo."],["Querer aprender tudo antes de postar.","Você trava e não publica nada.","siga os módulos na ordem e poste o primeiro vídeo. Os ajustes vêm depois, com dados."]]}],"tarefa":"Rode o prompt acima, escolha **um** formato e escreva-o em uma frase. Salve a frase, os 3 títulos e suas respostas às 3 perguntas num arquivo de notas chamado **\"Meu canal\"**. Esse arquivo vai crescer a cada módulo.","check":["Entendi as 7 etapas de um vídeo","Formato do canal escrito em uma frase","3 títulos de exemplo salvos","Respostas às 3 perguntas salvas no arquivo \"Meu canal\""]},{"id":"0.2","titulo":"FERRAMENTAS E CUSTOS","blocos":[{"t":"porque","rotulo":"POR QUE SÓ DUAS FERRAMENTAS","itens":["**Menos coisa para aprender.** Você domina duas ferramentas em vez de se perder em várias.","**Um lugar só para o padrão do canal.** O Claude guarda o contexto da conversa, então seu tom, suas cores e sua estrutura ficam com ele, e você não reexplica tudo a cada vídeo.","**Menos custo.** São no máximo duas assinaturas, e só quando você precisar."]},{"t":"tabela","cab":["FERRAMENTA","O QUE FAZ NO CURSO","ONDE USAR"],"larg":["18%","44%","38%"],"linhas":[["**Claude**","Ideias, roteiros, identidade, capas, legendas e a montagem do vídeo","App do Claude no computador, que cria e entrega arquivos (vídeo, imagens)"],["**ElevenLabs**","Narração e trilha sonora","Conectado ao Claude: você pede no Claude e ele gera por você (Módulo 3)"]]},{"t":"sub","x":"Quanto custa"},{"t":"p","x":"Os dois têm opção gratuita para testar. Preços, limites e o que cada plano inclui mudam com frequência, então **confira sempre a página de planos de cada um**. Alguns recursos usados no curso, como conectores e criação de arquivos, podem depender do plano. A recomendação geral é começar no gratuito e assinar só quando o limite travar sua produção."},{"t":"passos","itens":["**Crie um e-mail só para o canal.** Assim o canal fica separado da sua vida pessoal e pode ser passado para outra pessoa no futuro.","**Crie a conta no Claude** com esse e-mail e **instale o app no computador** (Windows ou Mac).","**Crie a conta no ElevenLabs** com o mesmo e-mail. A conexão com o Claude fica para o Módulo 3.","**Crie as pastas do canal** no computador, para nenhum arquivo se perder.","**Faça um teste:** peça ao Claude um arquivo simples e confirme que você consegue baixá-lo.","**Se o seu plano tiver Projetos**, crie um chamado \"Meu canal dark\" e cole nele as instruções do canal. Você vai completá-las nos próximos módulos."]},{"t":"exemplo","antes":"Conta criada com o e-mail pessoal, conversas soltas no Claude, áudios na pasta Downloads com nomes como \"audio (3).mp3\". Cada vídeo começa do zero, e você explica o canal de novo toda vez.","depois":"Tudo fica no e-mail do canal, e um Projeto no Claude já sabe o seu formato. Para fazer um vídeo novo, basta abrir o Projeto e pedir \"novo vídeo, mesmo padrão\". As pastas ficam assim:","extra":[{"t":"pre","x":"Meu canal/\n  01-roteiros/   2025-03-14_golpe-corretora_v1.txt\n  02-audios/     2025-03-14_golpe-corretora_cena01.mp3\n  03-videos/     2025-03-14_golpe-corretora_vertical.mp4\n  04-capas/      2025-03-14_golpe-corretora_thumb.png"}]},{"t":"prompt","rotulo":"PROMPT · CLAUDE (CONFIGURAÇÃO)","x":"Vou começar um canal dark usando só o Claude e o ElevenLabs.\nFormato do meu canal: [cole a frase da aula 0.1]\nMeu computador: [Windows ou Mac]\nTempo por semana: [horas]\n\nFaça o seguinte, em linguagem simples:\n1. Um checklist de configuração em ordem: e-mail, contas, app do Claude no computador.\n2. Uma estrutura de pastas para roteiros, áudios, vídeos e capas, com um padrão de nome\n   de arquivo que funcione para todos os vídeos (data + título curto + tipo).\n3. Um texto de \"instruções do canal\" para eu colar no meu Projeto do Claude, com espaços\n   [a preencher] para: nicho, ângulo, público, tom de voz, cores, fontes e voz do ElevenLabs.\n4. Em que momento faz sentido assinar um plano pago em cada ferramenta. Não cite preços:\n   eu confiro no site."},{"t":"prompt","rotulo":"TESTE RÁPIDO · CLAUDE","x":"Crie um arquivo de texto chamado teste-canal.txt com a frase\n\"Meu canal começa hoje\" e me entregue para baixar."},{"t":"erros","itens":[["Usar o e-mail pessoal.","Mistura notificações e dificulta separar ou passar o canal adiante.","um e-mail só do canal, usado em todas as contas."],["Tentar montar vídeo pelo celular ou pelo navegador.","A criação de arquivos e a montagem funcionam melhor no app do computador.","instale o app logo no início."],["Assinar tudo antes de testar.","Você paga por algo que ainda não sabe se vai usar.","produza os primeiros vídeos no gratuito e assine quando travar."],["Deixar arquivos soltos em Downloads.","Fica impossível achar a voz da cena 4 do vídeo da semana passada.","use as pastas e o padrão de nome desde o primeiro vídeo."],["Começar cada vídeo numa conversa nova, sem contexto.","O Claude esquece seu padrão e cada vídeo sai diferente.","trabalhe dentro do Projeto, ou cole as instruções do canal no início da conversa."],["Adicionar outro programa \"só para ajudar\".","Isso quebra o fluxo e multiplica o trabalho.","se precisar de algo, peça ao Claude."]]}],"tarefa":"Crie o e-mail do canal, as contas no Claude e no ElevenLabs e instale o app do Claude no computador. Rode o prompt de configuração, crie as pastas e faça o teste do arquivo.","check":["E-mail do canal criado","Contas no Claude e no ElevenLabs com esse e-mail","App do Claude instalado no computador","Teste do arquivo funcionou (baixei o teste-canal.txt)","Pastas do canal criadas","Instruções do canal salvas (com os campos a preencher)"]}],"video":{"src":"videos/modulo-0.mp4","poster":"videos/modulo-0.jpg","dur":136}},{"n":1,"titulo":"IDENTIDADE E BRANDING NO CLAUDE","capaTitulo":["IDENTIDADE E BRANDING","NO CLAUDE"],"arquivo":"modulo-1-identidade-e-branding","meta":"CERCA DE 1H30 COM AS TAREFAS","resumo":"Nicho com ângulo, nome magnético, visual, tom de voz, bio e destaques.","aoFinal":"nicho, nome, cores, fontes, logo, tom de voz, bio e destaques prontos e publicados nas 3 redes.","aulas":[{"id":"1.1","titulo":"NICHO COM ÂNGULO","blocos":[{"t":"p","x":"**Nicho** é o assunto do canal. **Ângulo** é o jeito único de contar esse assunto. \"Crimes reais\" é um nicho. \"Golpes financeiros reais contados como investigação, em menos de 90 segundos\" é um nicho com ângulo."},{"t":"porque","itens":["**O algoritmo precisa saber para quem mostrar.** Quando todos os vídeos falam com o mesmo público, fica mais fácil a plataforma encontrar outras pessoas parecidas com quem já gostou.","**O ângulo faz você se destacar.** Quase todo assunto já tem canais. O jeito de contar é o que faz alguém escolher o seu.","**Pilares evitam que as ideias acabem.** Dois ou três subtemas do mesmo público dão variedade sem bagunçar o canal."]},{"t":"passos","itens":["**Liste o que você aguenta pesquisar toda semana.** Escolha 3 a 5 assuntos de que você gosta de verdade.","**Rode o prompt** e receba 5 opções de nicho com ângulo.","**Faça os 3 testes** na opção favorita: as pessoas procuram? Rende história? Dá para fazer sem aparecer?","**Teste \"as pessoas procuram?\" na prática:** busque o assunto no YouTube e no TikTok e veja se existem vídeos recentes com visualizações. Não precisa de número exato: é só para confirmar que há interesse.","**Escolha 2 ou 3 pilares** do mesmo público e anote tudo no arquivo \"Meu canal\"."]},{"t":"exemplo","antes":"\"Canal sobre dinheiro.\"\nAmplo demais: compete com milhares de canais, não sugere um formato e não diz por que alguém deveria seguir você.","depois":"\"Rastro do Golpe: golpes financeiros reais contados como investigação, em 60 a 90 segundos.\"\nPilares: 1) golpes famosos da história; 2) golpes digitais de hoje (Pix, cripto, falso suporte); 3) como os golpistas foram pegos.","extra":[{"t":"nota","x":"Exemplo ilustrativo. Ele acompanha você pelo curso para mostrar cada etapa aplicada ao mesmo canal."}]},{"t":"prompt","x":"Você é estrategista de canais dark no YouTube, TikTok e Instagram.\nMeus interesses: [3 a 5 assuntos]. Meu tempo por semana: [horas].\nFormato que escolhi no Módulo 0: [cole a frase, se tiver].\n\n1. Me dê 5 opções de nicho com ÂNGULO. Para cada uma:\n   - o ângulo em uma frase (\"Meu canal conta ___ do jeito ___\")\n   - público-alvo (quem é, idade aproximada, por que assistiria)\n   - 2 a 3 pilares do mesmo público\n   - 3 títulos de vídeo de exemplo\n   - nota de 1 a 5 para: interesse do público, potencial de história,\n     facilidade de produzir sem aparecer\n   - riscos (assunto sensível, pouca variedade, depende de notícias)\n2. Recomende 1 e explique em 3 linhas.\n3. Para a recomendada, liste 10 títulos rápidos, para eu ver se as ideias não acabam.\nNão invente números de audiência: se não souber, diga que é uma estimativa."},{"t":"erros","itens":[["Nicho amplo demais (\"curiosidades\", \"tudo sobre o mundo\").","O público não entende por que seguir você.","complete a frase \"Meu canal conta ___ do jeito ___\". Se não couber, está amplo."],["Nicho estreito demais.","Um assunto que rende 5 vídeos trava o canal no segundo mês.","peça 10 títulos. Se travar antes disso, amplie com um pilar."],["Escolher só pelo que \"dá dinheiro\".","Sem interesse, você abandona nas primeiras semanas.","escolha um assunto que você aguente pesquisar toda semana."],["Pilares para públicos diferentes (golpes + receitas).","Cada vídeo atrai uma pessoa diferente e ninguém fica.","todos os pilares precisam interessar à mesma pessoa."]]}],"tarefa":"Rode o prompt, aplique os 3 testes na sua opção favorita e anote no arquivo \"Meu canal\": o ângulo em uma frase, os seus 2 ou 3 pilares e os 10 títulos.","check":["Ângulo escrito em uma frase","2 ou 3 pilares do mesmo público","Passou nos 3 testes","10 títulos possíveis anotados"]},{"id":"1.2","titulo":"NOME MAGNÉTICO","blocos":[{"t":"p","x":"O nome é a primeira coisa que a pessoa lê, antes mesmo do vídeo. Ele precisa ser lembrado depois de ouvido uma vez."},{"t":"porque","itens":["**Nome curto e fácil de falar é buscado depois.** Se a pessoa não consegue escrever, ela não te encontra.","**Nome que desperta curiosidade já é um gancho.** Ele faz a pessoa querer saber do que se trata.","**O mesmo @ nas 3 redes** ajuda quem te viu no TikTok a te achar no YouTube."]},{"t":"passos","itens":["**Gere 20 nomes** com o prompt.","**Filtre pelas 4 regras:** curto, fácil de falar, desperta curiosidade e não imita marca famosa.","**Faça o teste do ouvido:** fale o nome em voz alta para alguém. Ele consegue escrever sem você soletrar?","**Pesquise o nome** no YouTube, Instagram, TikTok, Google e na busca de marcas do INPI.","**Garanta o @ nas 3 redes no mesmo dia**, mesmo antes de postar o primeiro vídeo."]},{"t":"exemplo","antes":"\"Mistérios e Curiosidades do Mundo Oficial BR\"\nLongo, genérico e difícil de escrever. Não diz qual é o assunto.","depois":"\"Rastro do Golpe\", @rastrodogolpe\nTrês palavras, diz o assunto, desperta curiosidade e cabe no @ sem números."},{"t":"prompt","x":"Meu canal dark: [ângulo em uma frase]. Pilares: [pilares]. Público: [quem].\nCrie 20 nomes para o canal:\n- 2 ou 3 palavras, fáceis de falar e de escrever em português\n- que despertem curiosidade e deem uma pista do assunto\n- sem imitar filmes, séries, livros ou marcas conhecidas\n- sem números nem palavras estrangeiras difíceis de soletrar\nPara cada nome, sugira o @ (até 20 caracteres) e 2 variações caso esteja ocupado.\nMarque os 3 melhores e explique em uma linha por quê.\nVocê não consegue verificar se o @ está livre: me lembre de conferir em cada rede\ne no INPI."},{"t":"erros","itens":[["Nome igual ou parecido com filme, série ou marca.","Você some na busca e pode ter problema de marca registrada.","pesquise no Google e no INPI antes de decidir."],["Usar números e underlines (@rastro_do_golpe_2).","Ninguém lembra onde vai o underline.","prefira variações com palavras (\"orastrodogolpe\") e use a mesma nas 3 redes."],["Nome preso a um tema pequeno demais.","Impede o canal de crescer para outros pilares.","o nome deve caber em todos os seus pilares."],["Deixar para garantir o @ depois.","Alguém pode pegar antes de você.","crie as 3 contas no mesmo dia em que escolher o nome."]]}],"tarefa":"Gere os 20 nomes, escolha 1 pelas 4 regras e pelo teste do ouvido, pesquise no INPI e garanta o mesmo @ nas 3 redes.","check":["Nome escolhido e testado em voz alta","Pesquisa no Google e no INPI feita","Mesmo @ criado no YouTube, Instagram e TikTok","Nome e @ anotados no arquivo \"Meu canal\""]},{"id":"1.3","titulo":"VISUAL DO CANAL: CORES, FONTES E LOGO","blocos":[{"t":"porque","itens":["**Reconhecimento.** No feed, a pessoa reconhece seu vídeo pela cor e pela letra antes de ler o nome.","**Decidir uma vez economiza tempo.** Com o guia pronto, você não escolhe cor e fonte a cada vídeo.","**Regra 70/20/10:** cerca de 70% de fundo, 20% de texto e 10% de cor de destaque. O destaque chama atenção justamente porque aparece pouco."]},{"t":"passos","itens":["**Defina o clima** do canal em 2 ou 3 palavras (ex.: investigativo, sombrio, sério).","**Peça o guia visual ao Claude** como uma página visual (artefato), com o prompt abaixo.","**Teste o guia no celular:** o texto é legível? O destaque aparece? O logo funciona pequeno, no tamanho do avatar?","**Ajuste uma coisa por vez** (\"troque o vermelho por um mais escuro\", \"a fonte de legenda está fina demais\").","**Salve o link do guia** e anote os códigos das cores (HEX) e o nome das fontes no arquivo \"Meu canal\"."]},{"t":"tabela","rotulo":"EXEMPLO DE PALETA (ILUSTRATIVO)","cab":["PAPEL","COR","ONDE USAR"],"larg":["22%","26%","52%"],"linhas":[["Fundo (70%)","Quase preto #0B0B0C","Fundo das cenas e das capas"],["Texto (20%)","Creme #F0EBE3","Títulos e legendas"],["Destaque (10%)","Vermelho #E01E2D","Palavra-chave, número da capa, símbolo do logo"],["Apoio","Cinza #6E6862","Fonte no rodapé, informações secundárias"]]},{"t":"exemplo","antes":"Cada vídeo com uma cor e uma fonte. Logo cheio de detalhes que vira uma mancha no avatar. Destaque vermelho em todas as palavras.","depois":"Fundo quase preto, texto creme e vermelho só na palavra-chave e no número da capa. Fontes: Anton nos títulos, Archivo nas legendas, IBM Plex Mono nos dados (todas no Google Fonts). Logo: uma lupa sobre um cifrão, que continua legível em tamanho pequeno."},{"t":"prompt","x":"Canal dark: [nome]. Ângulo: [ângulo]. Clima: [ex.: investigativo, sombrio].\nCrie a identidade visual e entregue como uma página visual (artefato) com:\n1. Paleta de 5 a 6 cores com nome, HEX e função (regra 70/20/10)\n2. 3 fontes do Google Fonts: títulos, legendas e dados, com exemplo de cada uma\n3. Logo minimalista (símbolo + nome) em fundo escuro, fundo claro e avatar redondo\n4. Exemplo de tela vertical 9:16 e de thumbnail 16:9 aplicando a identidade\n5. 5 regras do que NÃO fazer\n6. Teste de legibilidade: o texto de legenda continua legível em tela de celular?\nAo final, escreva um resumo curto (cores, fontes, regras) para eu colar nas\ninstruções do meu Projeto."},{"t":"erros","itens":[["Cor de destaque em tudo.","Quando tudo chama atenção, nada chama.","use o destaque só em 1 ou 2 pontos por tela."],["Fontes finas ou decorativas.","No celular, viram um borrão.","títulos em fonte grossa, legendas em fonte simples."],["Logo com detalhes, sombras e textos pequenos.","No avatar ele fica ilegível.","símbolo simples que funcione pequeno e em uma cor só."],["Copiar a identidade de um canal conhecido.","Confunde o público e pode gerar problema de marca.","peça ao Claude um visual próprio a partir do seu clima."]]}],"tarefa":"Gere o guia visual, ajuste o que não gostar e salve o link. Anote cores e fontes no arquivo \"Meu canal\".","check":["Guia visual salvo (link)","Paleta com função de cada cor","3 fontes definidas","Logo testado no tamanho do avatar","Resumo do visual colado nas instruções do Projeto"]},{"id":"1.4","titulo":"TOM DE VOZ E PERFIL OTIMIZADO","blocos":[{"t":"porque","itens":["**Tom de voz igual em todos os roteiros** faz o canal parecer uma pessoa, mesmo sem rosto.","**O perfil decide se quem gostou de um vídeo vai seguir.** Em poucos segundos ele precisa dizer o que é o canal e por que seguir.","**O mesmo slogan nas 3 redes** reforça a marca e passa confiança."]},{"t":"passos","itens":["**Defina o tom de voz:** 3 adjetivos, 3 regras de escrita e 3 proibições.","**Escreva a bio em 3 linhas:** promessa, o que você posta e uma chamada.","**Respeite os limites de cada rede.** Hoje a bio do Instagram aceita 150 caracteres, a do TikTok 80 e o nome do perfil do Instagram 30. Esses limites podem mudar, então confira na hora de publicar.","**Destaques do Instagram:** um por pilar, mais um \"Comece aqui\" com seu melhor vídeo.","**YouTube:** descrição do canal com palavras-chave e banner de 2560x1440 px, com o nome e o slogan no centro. As bordas são cortadas em alguns aparelhos.","**Avatar:** só o símbolo do logo, sem texto pequeno."]},{"t":"exemplo","antes":"\"Bem-vindos ao meu canal!! Aqui falamos de tudo um pouco 🔥🔥 Sigam!\"\nNão diz o assunto, não promete nada e a chamada é vaga.","depois":"\"Golpes reais contados como investigação.\nUm caso novo toda semana, em 90 segundos.\n↓ Comece pelo maior golpe da história\"\nPromessa, frequência e uma chamada que leva a um vídeo.","extra":[{"t":"tabela","rotulo":"TOM DE VOZ DO EXEMPLO","cab":["ADJETIVOS","REGRAS","PROIBIÇÕES"],"larg":["30%","35%","35%"],"linhas":[["Sério, curioso, direto","Frases curtas; sempre citar a fonte; terminar com uma pergunta","Gírias; \"você não vai acreditar\"; acusar quem não foi condenado"]]}]},{"t":"prompt","x":"Canal dark: [nome]. Ângulo: [ângulo]. Pilares: [pilares]. Público: [quem].\nSlogan: [se tiver; se não, sugira 3].\n1. Tom de voz: 3 adjetivos, 3 regras de escrita e 3 proibições, com 1 frase de exemplo\n   de cada regra.\n2. Bio do Instagram (máx. 150 caracteres) e do TikTok (máx. 80) em 3 linhas:\n   promessa, o que eu posto e chamada. Conte os caracteres de cada uma.\n3. Descrição do canal no YouTube com palavras-chave naturais (sem lista de tags).\n4. Nome do perfil no Instagram (até 30 caracteres) com uma palavra-chave.\n5. Destaques: 1 por pilar + \"Comece aqui\", com nome curto e um ícone simples para cada.\n6. Gere como imagens prontas, no meu guia visual: capas dos destaques (1080x1920),\n   avatar (1080x1080) e banner do YouTube (2560x1440, com o texto no centro)."},{"t":"erros","itens":[["Bio que fala de você, não do que a pessoa ganha.","Ninguém segue um canal dark por causa de quem está por trás.","comece pela promessa (\"Golpes reais contados como investigação\")."],["Bio sem chamada.","A pessoa lê e vai embora.","termine apontando para um vídeo ou destaque."],["Passar do limite de caracteres.","O texto aparece cortado.","peça ao Claude para contar os caracteres."],["Texto na borda do banner.","Em alguns aparelhos ele some.","deixe nome e slogan no centro."],["Avatar com o nome escrito.","Pequeno demais para ler.","use só o símbolo."]]}],"tarefa":"Gere tom de voz, bios, destaques, avatar e banner com o prompt e publique tudo nas 3 redes.","check":["Tom de voz salvo no arquivo \"Meu canal\" e no Projeto","Bio publicada no Instagram e no TikTok","Descrição e banner no YouTube","Avatar igual nas 3 redes","Destaques criados no Instagram"]}],"checklist":["Nicho com ângulo e 2 ou 3 pilares","Nome e mesmo @ nas 3 redes","Guia visual salvo","Tom de voz definido","Bio, avatar, destaques e banner publicados"],"video":{"src":"videos/modulo-1.mp4","poster":"videos/modulo-1.jpg","dur":70}},{"n":2,"titulo":"PROMPTS E ROTEIROS","capaTitulo":["PROMPTS E ROTEIROS"],"arquivo":"modulo-2-prompts-e-roteiros","meta":"CERCA DE 2H30 COM AS TAREFAS","resumo":"Prompt que funciona, ideias, ganchos, roteiro curto, roteiro longo e checagem de fatos.","aoFinal":"uma lista de 50 pautas, um calendário de 2 semanas e os roteiros dos seus 3 primeiros vídeos, com fatos conferidos.","aulas":[{"id":"2.1","titulo":"A ESTRUTURA DO PROMPT QUE FUNCIONA","blocos":[{"t":"p","x":"Prompt é o pedido que você faz ao Claude. Quanto mais claro o pedido, menos você corrige depois."},{"t":"porque","itens":["**A IA preenche as lacunas com o genérico.** Se você não diz o público, o tom e o formato, ela escolhe o mais comum, e o resultado sai parecido com o de todo mundo.","**Um prompt organizado em blocos** faz você lembrar de tudo o que importa, sempre na mesma ordem.","**Corrigir na mesma conversa** aproveita o que o Claude já entendeu. Numa conversa nova, você começa do zero."]},{"t":"tabela","rotulo":"OS 5 BLOCOS","cab":["BLOCO","RESPONDE A","EXEMPLO"],"larg":["18%","32%","50%"],"linhas":[["**Papel**","Quem o Claude deve ser?","Você é roteirista de um canal dark de golpes financeiros."],["**Contexto**","Para quem e em que tom?","Público: adultos que usam Pix e apps de banco. Tom: sério, curioso, direto."],["**Tarefa**","O que entregar?","Escreva o roteiro de um vídeo curto sobre o golpe do falso suporte."],["**Formato**","Como entregar?","7 cenas numeradas com NARRAÇÃO, TEXTO NA TELA e VISUAL."],["**Restrições**","O que evitar e quais limites?","Até 90 segundos, números por extenso, cite a fonte de cada dado."]]},{"t":"passos","itens":["**Monte seu prompt-modelo** com os 5 blocos e os dados do seu canal.","**Peça e avalie:** leia a resposta procurando o que não serve.","**Corrija um ponto por vez**, na mesma conversa, dizendo exatamente o que mudar (\"a cena 3 está longa: corte para 2 frases\").","**Salve o que funcionou** numa \"biblioteca de prompts\" dentro do arquivo \"Meu canal\"."]},{"t":"exemplo","antes":"\"Faz um roteiro sobre golpes.\"\nO Claude precisa adivinhar o tamanho, o público, o tom e o formato. Sai um texto genérico, longo e sem cenas.","depois":"\"Você é roteirista do canal dark Rastro do Golpe. Público: adultos que usam Pix. Tom: sério, curioso, direto. Escreva o roteiro de um vídeo curto sobre o golpe do falso suporte do banco. Formato: 7 cenas com NARRAÇÃO, TEXTO NA TELA e VISUAL. Restrições: até 90 segundos, números por extenso, fontes no final.\"\nSai pronto para a voz e a edição, no tom do canal."},{"t":"prompt","rotulo":"PROMPT-MODELO · CLAUDE","x":"PAPEL: Você é roteirista do canal dark [nome], sobre [nicho/ângulo].\nCONTEXTO: Público: [quem]. Tom: [3 adjetivos]. Regras de escrita: [suas 3 regras].\nProibições: [suas 3 proibições].\nTAREFA: [o que você quer agora].\nFORMATO: [lista, tabela, roteiro em cenas, etc.].\nRESTRIÇÕES: [tamanho, o que evitar, cite fontes, números por extenso...].\nSe faltar alguma informação para fazer bem feito, me pergunte antes de começar."},{"t":"erros","itens":[["Pedir pouco (\"faz um roteiro\").","O resultado sai genérico.","use sempre os 5 blocos."],["Pedir tudo num prompt só (ideias + roteiro + capa + legenda).","A qualidade de cada parte cai.","uma etapa por pedido, na mesma conversa."],["Corrigir com \"melhora isso\".","O Claude não sabe o que você quer mudar.","diga onde está o problema e como deve ficar."],["Abrir conversa nova a cada correção.","Você perde o contexto e repete tudo.","continue na mesma conversa ou no Projeto do canal."],["Não guardar os prompts bons.","Você reinventa o pedido toda semana.","monte a biblioteca de prompts no arquivo \"Meu canal\"."]]}],"tarefa":"Preencha o prompt-modelo com os dados do seu canal, teste com uma tarefa simples (\"me dê 5 títulos\") e salve na sua biblioteca de prompts.","check":["Prompt-modelo preenchido com os dados do canal","Testado com uma tarefa simples","Salvo na biblioteca de prompts"]},{"id":"2.2","titulo":"50 IDEIAS VIRAIS EM 5 MINUTOS","blocos":[{"t":"porque","itens":["**Pedir muitas e escolher poucas** dá mais resultado do que tentar acertar de primeira.","**Misturar tipos de pauta equilibra o canal.** Temas atemporais rendem por meses; datas e assuntos do momento trazem picos de alcance. Como recomendação geral, use cerca de 70% atemporais e 30% de datas e assuntos do momento.","**Toda pauta boa vira uma pergunta** que a pessoa quer ver respondida. Se não vira pergunta, não vira vídeo."]},{"t":"passos","itens":["**Rode o prompt** com seus pilares e o mês atual.","**Passe cada ideia pelo filtro da ideia viral:** tem curiosidade? Tem conflito? A resposta surpreende?","**Escolha as 10 melhores**, e não só pela nota da IA: pense no seu público.","**Monte um calendário de 2 semanas**, alternando os pilares.","**Marque as ideias do momento** para checar as datas na aula 2.6."]},{"t":"exemplo","antes":"\"A história do Bitcoin.\"\nÉ um tema, não uma pergunta. Não tem conflito nem surpresa.","depois":"\"Por que um homem passou anos tentando achar um HD cheio de bitcoins num aterro de lixo?\"\nTem curiosidade (por quê?), conflito (o lixo, o tempo, a fortuna perdida) e uma resposta que a pessoa quer ouvir.","extra":[{"t":"nota","x":"O caso existe e foi noticiado, mas antes de usar confira os detalhes nas fontes (aula 2.6)."}]},{"t":"prompt","x":"Canal dark: [nome]. Ângulo: [ângulo]. Pilares: [pilares]. Mês: [mês/ano].\nGere 50 ideias de vídeo: 35 atemporais, 10 ligadas a datas deste mês\ne 5 sobre assuntos do momento (pesquise na web para confirmar que são atuais).\nEntregue em tabela com as colunas:\npilar | título em forma de pergunta ou revelação | gancho dos 3 primeiros segundos |\ntipo (atemporal, data ou momento) | nota de 1 a 5 de potencial |\nprecisa checar fatos? (sim/não)\nRegras: nada de ideias repetidas, todas dentro dos meus pilares, ordene da maior\npara a menor nota. Não invente datas: se não tiver certeza, marque \"conferir\"."},{"t":"erros","itens":[["Só assuntos do momento.","Quando a notícia passa, o vídeo para de render.","mantenha a maioria das pautas atemporal."],["Títulos que são só um tema (\"A história de X\").","Não criam vontade de assistir.","transforme em pergunta ou revelação."],["Ideias fora dos pilares.","Confundem o público do canal.","descarte o que não cabe em nenhum pilar."],["Confiar na data que a IA deu.","Datas comemorativas e notícias podem estar erradas.","peça pesquisa na web e confira você mesmo."]]}],"tarefa":"Gere as 50 ideias, escolha as 10 melhores e monte o calendário de 2 semanas no arquivo \"Meu canal\".","check":["Lista de 50 ideias salva","10 escolhidas pelo filtro (curiosidade, conflito, surpresa)","Calendário de 2 semanas alternando pilares","Ideias do momento marcadas para checar"]},{"id":"2.3","titulo":"GANCHOS DOS 3 PRIMEIROS SEGUNDOS","blocos":[{"t":"porque","itens":["**A pessoa decide nos primeiros segundos** se continua ou passa para o próximo vídeo. Introdução é onde a maioria vai embora.","**Gancho falado, texto na tela e imagem juntos** se reforçam: quem está sem som lê, quem não olha a tela ouve.","**O gancho é uma promessa.** Se o vídeo não cumpre, a pessoa se sente enganada e deixa de confiar no canal."]},{"t":"tabela","rotulo":"OS 5 TIPOS DE GANCHO (EXEMPLO: O CASO DA CORRETORA)","cab":["TIPO","EXEMPLO"],"larg":["26%","74%"],"linhas":[["**Número chocante**","\"Um bilhão e meio de dólares sumiram de uma corretora num único dia.\""],["**Pergunta**","\"Como alguém leva um bilhão e meio sem arrombar nada?\""],["**Contradição**","\"A carteira mais protegida da empresa foi justamente a que esvaziaram.\""],["**Cena no meio da ação**","\"Os funcionários aprovaram a transferência achando que era rotina.\""],["**Promessa**","\"Em um minuto, você vai entender o maior roubo de criptomoedas da história.\""]]},{"t":"passos","itens":["**Ache o fato mais forte** do tema: um número, uma contradição ou uma cena.","**Gere 10 ganchos**, 2 de cada tipo, com o prompt.","**Leia em voz alta.** O bom gancho cabe numa respiração.","**Escolha 1** e defina o texto na tela (até 5 palavras) e a imagem da primeira cena."]},{"t":"exemplo","antes":"\"Olá, pessoal! Hoje vamos falar sobre um ataque hacker muito interessante que aconteceu no ano passado...\"\nSaudação e introdução: nada acontece nos primeiros segundos.","depois":"Fala: \"Um bilhão e meio de dólares. Sumiram de uma corretora num único dia.\"\nTexto na tela: \"1,5 BILHÃO SUMIU\"\nImagem: um cofre aberto e vazio."},{"t":"prompt","x":"Tema do vídeo: [tema]. Fato mais forte: [número, contradição ou cena].\nPúblico: [quem]. Tom do canal: [3 adjetivos].\nEscreva 10 ganchos de até 15 palavras, 2 de cada tipo: número chocante, pergunta,\ncontradição, cena no meio da ação e promessa.\nPara cada um:\n- texto na tela (até 5 palavras)\n- imagem da primeira cena (algo simples de animar)\nRegras: nada de saudação ou introdução; não prometa o que o vídeo não entrega;\nnúmeros na fala por extenso.\nMarque o melhor e explique por quê em 2 linhas."},{"t":"erros","itens":[["Começar com saudação ou apresentação.","É o momento em que mais gente sai.","a primeira frase já é o fato mais forte."],["Gancho que promete o que o vídeo não entrega.","Gera abandono e desconfiança.","só prometa o que a revelação cumpre."],["Gancho longo.","Perde força antes de terminar.","até 15 palavras, que caibam numa respiração."],["Usar sempre o mesmo tipo.","O canal fica previsível.","alterne os 5 tipos entre os vídeos."]]}],"tarefa":"Gere 10 ganchos para cada um dos seus 3 primeiros vídeos e escolha 1 para cada, com texto na tela e imagem.","check":["3 ganchos escolhidos","Cada um com texto na tela (até 5 palavras)","Cada um com a imagem da primeira cena","Todos lidos em voz alta"]},{"id":"2.4","titulo":"ROTEIRO CURTO (30 A 90 SEGUNDOS)","blocos":[{"t":"porque","itens":["**Uma estrutura fixa** (gancho → contexto → investigação → revelação → chamada) dá um motivo para continuar assistindo a cada cena.","**Cenas numeradas** facilitam tudo depois: uma fala por cena na voz (Módulo 3) e um visual por cena na edição (Módulo 4).","**Escrever para o ouvido** (frases curtas, números por extenso) deixa a narração natural.","**Mire em mais de 1 minuto:** é o mínimo para o vídeo contar no programa de recompensas do TikTok (aula 6.2). Confira a regra atual na página oficial."]},{"t":"tabela","rotulo":"A ESTRUTURA","cab":["PARTE","FUNÇÃO","CENAS"],"larg":["22%","58%","20%"],"linhas":[["**Gancho**","Fato mais forte, sem introdução","1"],["**Contexto**","O mínimo para entender: quem, quando, onde","1 a 2"],["**Investigação**","Como aconteceu, passo a passo","2 a 3"],["**Revelação**","A resposta ou a virada","1"],["**Chamada**","Uma pergunta que gera comentário","1"]]},{"t":"exemplo","rotuloAntes":"ROTEIRO RUIM","rotuloDepois":"ROTEIRO BOM (TRECHO, ILUSTRATIVO)","antes":"Um bloco único de texto, que começa com \"Neste vídeo vamos falar sobre...\", tem frases de 3 linhas e números como \"US$ 1,5 bi\". Não tem cenas nem indicação visual.","depois":"CENA 1\nNARRAÇÃO: Um bilhão e meio de dólares. Sumiram de uma corretora num único dia.\nTEXTO: 1,5 BILHÃO SUMIU\nVISUAL: cofre aberto e vazio\n\nCENA 2\nNARRAÇÃO: Fevereiro de dois mil e vinte e cinco. A vítima: a Bybit, uma das maiores corretoras de criptomoedas do mundo.\nTEXTO: FEV/2025\nVISUAL: prédio com uma moeda\n\nCENA 4\nNARRAÇÃO: Para mexer nessa carteira, várias pessoas precisavam aprovar. E elas aprovaram.\nTEXTO: ELES MESMOS ASSINARAM\nVISUAL: três bonecos com caneta\n\nCENA 7\nNARRAÇÃO: Se nem a carteira mais protegida escapou, onde você guardaria o seu dinheiro?\nTEXTO: E VOCÊ?","pre":true,"extra":[{"t":"nota","x":"Fontes a conferir antes de usar: o comunicado da própria corretora e o alerta público do FBI (fevereiro de 2025), além de veículos especializados."}]},{"t":"prompt","x":"Escreva o roteiro de um vídeo curto de [65 a 90] segundos para o canal [nome].\nTema: [tema]. Gancho escolhido: [gancho]. Tom: [3 adjetivos].\nEstrutura: gancho → contexto → investigação → revelação → chamada.\nDivida em 7 a 9 cenas numeradas. Para cada cena:\n- NARRAÇÃO: frases de até 20 palavras, números e datas por extenso\n- TEXTO NA TELA: até 5 palavras\n- VISUAL: um ícone, gráfico ou cena simples de animar\nRegras: uma ideia por cena; cada cena deixa uma pergunta para a próxima;\ntermine com uma pergunta que gere comentários.\nAo final: tempo estimado de narração e a lista de fontes de cada dado."},{"t":"erros","itens":[["Contexto longo antes do conflito.","A pessoa sai antes de a história começar.","no máximo 2 cenas de contexto."],["Duas ideias na mesma cena.","A voz e a edição ficam confusas.","uma ideia por cena; se precisar, crie outra cena."],["Números com algarismos na narração (\"US$ 1,5 bi\").","A voz lê errado.","escreva por extenso na narração; algarismos só no texto na tela."],["Final sem chamada.","Você perde comentários, que ajudam na distribuição.","termine com uma pergunta simples de responder."],["Esquecer as fontes.","Você não consegue checar nem citar depois.","peça a lista de fontes em todo roteiro."]]}],"tarefa":"Escreva os roteiros dos seus 3 primeiros vídeos curtos com o prompt, usando os ganchos da aula 2.3.","check":["3 roteiros em cenas numeradas","Cada cena com narração, texto na tela e visual","Narração com números por extenso","Cada roteiro termina com uma pergunta","Fontes listadas"]},{"id":"2.5","titulo":"ROTEIRO LONGO (8 A 15 MINUTOS)","blocos":[{"t":"porque","itens":["**No vídeo longo, a atenção costuma cair no começo e no meio.** A estrutura em 3 atos existe para segurar esses dois momentos.","**Open loop** é abrir uma pergunta e só responder mais tarde. Ele dá à pessoa um motivo para ficar até o fim.","**Mini-revelações a cada trecho** mantêm a sensação de que o vídeo está andando.","**Capítulos** ajudam a pessoa a navegar e mostram ao YouTube do que trata cada parte."]},{"t":"tabela","rotulo":"ESTRUTURA DE UM VÍDEO DE CERCA DE 10 MINUTOS","cab":["BLOCO","DURAÇÃO APROXIMADA","O QUE ACONTECE"],"larg":["22%","22%","56%"],"linhas":[["**Abertura**","cerca de 30 s","Gancho + promessa do que será revelado + 1º open loop"],["**Ato 1: o mistério**","cerca de 2 min","Quem, quando, onde; o problema fica claro"],["**Ato 2: a investigação**","cerca de 5 min","Pistas e viradas a cada 60 a 90 s; 2º open loop"],["**Ato 3: a resposta**","cerca de 2 min","Revelação; os open loops são fechados"],["**Fechamento**","cerca de 30 s","O que aprendemos + pergunta + próximo vídeo"]]},{"t":"exemplo","rotuloAntes":"ABERTURA FRACA","rotuloDepois":"ABERTURA FORTE (ILUSTRATIVA)","antes":"\"Hoje vamos contar a história de Charles Ponzi, que nasceu na Itália e se mudou para os Estados Unidos...\"\nComeça pela biografia. Nada faz a pessoa querer ficar.","depois":"\"Em mil novecentos e vinte, um homem em Boston prometia cinquenta por cento de lucro em quarenta e cinco dias. E, por um tempo, ele pagava. Como isso era possível? A resposta está no fim deste vídeo, e ela explica golpes que acontecem até hoje.\"\nGancho, promessa e open loop em 3 frases.","extra":[{"t":"nota","x":"Caso histórico conhecido. Confira datas e números nas fontes antes de gravar (aula 2.6)."}]},{"t":"prompt","x":"Escreva um roteiro de [10] minutos para o canal [nome] sobre [tema].\nPúblico: [quem]. Tom: [3 adjetivos].\nEstrutura:\n- Abertura (cerca de 30 s): gancho + promessa + 1º open loop\n- Ato 1, o mistério; Ato 2, a investigação, com um ponto de virada a cada 60–90 s\n  e o 2º open loop; Ato 3, a resposta, fechando os 2 open loops\n- Fechamento: resumo em 1 frase + pergunta + gancho para o próximo vídeo\nFormato: blocos com duração aproximada, NARRAÇÃO e VISUAL.\nNarração para voz: frases curtas, números por extenso.\nInclua: sugestão de capítulos para o YouTube e as fontes de cada dado.\nNão encha linguiça: se o tema não rende [10] minutos, me diga quanto rende."},{"t":"erros","itens":[["Introdução longa ou biografia no começo.","É onde mais gente sai.","comece pelo momento mais intrigante e volte ao contexto depois."],["Encher linguiça para o vídeo ficar longo.","A atenção cai e o vídeo perde distribuição.","o tamanho é o que o tema rende, não o contrário."],["Abrir um open loop e esquecer de fechar.","A pessoa se sente enganada.","anote cada open loop e confira se foi respondido."],["Sem capítulos.","Fica difícil navegar e entender a estrutura.","peça os capítulos junto com o roteiro."]]}],"tarefa":"Escolha a pauta mais forte da sua lista e transforme em roteiro longo com o prompt.","check":["1 roteiro longo em 3 atos","2 open loops abertos e fechados","Pontos de virada ao longo do Ato 2","Capítulos sugeridos","Fontes listadas"]},{"id":"2.6","titulo":"CHECAGEM DE FATOS COM O CLAUDE","blocos":[{"t":"porque","itens":["**A IA pode errar com total confiança:** datas, números, nomes e até citações que nunca existiram.","**Um dado errado derruba a credibilidade** do canal inteiro, e os comentários não perdoam.","**Falar de pessoas reais exige cuidado.** Afirmar crime sem condenação pode gerar problema legal."]},{"t":"passos","itens":["**Peça ao Claude para pesquisar na web** e classificar cada afirmação do roteiro.","**Abra você mesmo os links** dos 2 ou 3 dados principais e confira se a página diz aquilo mesmo.","**Prefira fontes fortes:** documentos oficiais, órgãos públicos, grandes veículos e a própria empresa envolvida.","**Reescreva o que for arriscado** com cautela: \"segundo...\", \"suspeita de...\", \"denunciado por...\".","**Guarde as fontes:** elas vão para o rodapé da cena e para a descrição (Módulo 5)."]},{"t":"exemplo","rotuloAntes":"FRASE ARRISCADA","rotuloDepois":"FRASE SEGURA","antes":"\"Fulano é um golpista que enganou milhares de pessoas.\"\nAfirma um crime e um número sem fonte.","depois":"\"Fulano foi denunciado por estelionato, segundo o [veículo]. O processo ainda não terminou.\"\nDiz quem afirma, usa o termo jurídico correto e informa a situação real."},{"t":"prompt","x":"Revise este roteiro como checador de fatos: [cole o roteiro].\nPesquise na web e entregue uma tabela:\nafirmação | status | fonte (link) | observação\nStatus possíveis:\n- CONFIRMADO: pelo menos uma fonte confiável diz exatamente isso\n- DIVERGENTE: as fontes discordam (diga o que cada uma diz)\n- SEM FONTE: não encontrei confirmação\nDepois:\n1. Reescreva as frases arriscadas com cautela (\"segundo...\", \"suspeita de...\").\n2. Aponte qualquer afirmação sobre pessoa real que pareça acusação sem condenação.\n3. Liste as 3 informações mais importantes para eu conferir pessoalmente.\nNão invente links: se não encontrar, marque SEM FONTE."},{"t":"erros","itens":[["Confiar no link sem abrir.","A página pode não dizer aquilo, ou nem existir.","abra e confira pelo menos os dados principais."],["Usar uma fonte só para um dado polêmico.","Se ela errou, você erra junto.","busque uma segunda fonte independente."],["Chamar de criminoso quem não foi condenado.","Risco legal e de credibilidade.","use \"suspeito\", \"denunciado\", \"segundo X\"."],["Dado velho em assunto do momento.","A situação pode ter mudado.","peça a data de cada fonte."]]}],"tarefa":"Cheque os seus 3 roteiros curtos com o prompt, confira pessoalmente os dados principais e corrija o que for preciso.","check":["3 roteiros checados","Dados principais conferidos por você nos links","Frases arriscadas reescritas","Fontes de cada roteiro salvas"]}],"checklist":["Prompt-modelo salvo na biblioteca","50 pautas e calendário de 2 semanas","3 ganchos escolhidos","3 roteiros curtos com fontes","1 roteiro longo","Fatos conferidos"],"video":{"src":"videos/modulo-2.mp4","poster":"videos/modulo-2.jpg","dur":74}},{"n":3,"titulo":"VOZ E ÁUDIO NO ELEVENLABS","capaTitulo":["VOZ E ÁUDIO NO","ELEVENLABS"],"arquivo":"modulo-3-voz-e-audio","meta":"CERCA DE 2 HORAS COM AS TAREFAS","resumo":"O Claude conectado ao ElevenLabs gerando tudo por você, escolha da voz, configurações, escrita para o ouvido e trilha sem problema de direitos.","aoFinal":"a voz do canal escolhida e a narração do primeiro vídeo pronta, cena por cena, com trilha.","aulas":[{"id":"3.0","titulo":"ATALHO: O CLAUDE FAZ O ELEVENLABS POR VOCÊ","blocos":[{"t":"p","x":"Com o ElevenLabs conectado ao Claude, você não precisa abrir o site do ElevenLabs. Você pede no Claude, e ele escolhe a voz, gera as falas e a música e salva os arquivos."},{"t":"porque","itens":["**Tudo numa conversa só:** roteiro, voz e trilha saem do mesmo lugar, sem copiar e colar entre sites.","**Mesma voz sempre:** com o ID da voz salvo no Projeto, todo vídeo usa a mesma voz.","**As próximas aulas continuam valendo.** Elas ensinam o que pedir (qual voz, quais ajustes, como escrever), e o Claude executa."]},{"t":"passos","itens":["**Conecte uma vez:** no Claude, abra **Conectores**, procure **ElevenLabs**, clique em **Conectar** e entre na sua conta do ElevenLabs. Só você faz esse login.","**Cole o roteiro em cenas** (aula 2.4) e use o prompt abaixo.","**Peça uma fala por cena**, uma de cada vez, esperando cada uma terminar.","**Confira os arquivos** (01, 02, 03...) e ouça cada um antes de seguir para a edição.","**Acompanhe os créditos:** o gasto sai da sua conta do ElevenLabs."]},{"t":"exemplo","rotuloAntes":"SEM O CONECTOR","rotuloDepois":"COM O CONECTOR","antes":"Abrir o site, colar a cena 1, gerar, baixar, renomear o arquivo... e repetir isso para as 7 cenas. Depois procurar uma música, baixar e torcer para combinar.","depois":"Um pedido no Claude: \"narre este roteiro com a voz [ID], uma fala por cena, e gere uma trilha de 90 segundos\". Os arquivos 01 a 07 e a trilha chegam prontos e na ordem."},{"t":"prompt","rotulo":"PROMPT · CLAUDE COM O ELEVENLABS CONECTADO","x":"Use o ElevenLabs conectado para narrar este roteiro: [cole o roteiro com as cenas].\n- Voz: [ID ou nome da voz]. Se eu não informar, sugira 3 vozes [masculinas ou\n  femininas], graves e calmas, em português do Brasil, e use a melhor.\n- Use só o texto de NARRAÇÃO de cada cena (ignore TEXTO NA TELA e VISUAL).\n- Gere UMA fala por cena, uma de cada vez, esperando cada uma terminar.\n- Nomeie os arquivos 01, 02, 03... na ordem das cenas.\n- Gere também uma trilha instrumental de [duração], [clima], sem voz.\n- No final, me diga quantos créditos foram usados e se alguma cena deu erro."},{"t":"erros","itens":[["Não informar o ID da voz.","Cada vídeo pode sair com uma voz diferente.","salve o ID na aula 3.1 e cole sempre no prompt."],["Mandar o roteiro inteiro numa fala só.","Um erro obriga a refazer tudo.","uma fala por cena (aula 3.4)."],["Pedir tudo ao mesmo tempo no plano gratuito.","Os pedidos entram em fila e podem falhar.","peça para gerar uma por vez e esperar."],["Mandar também o TEXTO NA TELA e o VISUAL.","A voz lê as instruções de edição.","peça para usar só a NARRAÇÃO."]]}],"tarefa":"Conecte o ElevenLabs ao Claude e peça a narração de teste de uma cena do seu primeiro roteiro.","check":["ElevenLabs conectado ao Claude","Narração de teste de 1 cena gerada e ouvida","Sei onde ver os créditos usados"]},{"id":"3.1","titulo":"ESCOLHENDO A VOZ","blocos":[{"t":"porque","itens":["**A voz é o rosto do canal dark.** O público reconhece o canal pela voz, então escolha uma e mantenha.","**O ID da voz** é o que garante a mesma voz em todos os vídeos, mesmo meses depois.","**Comparar na mesma frase** é o único jeito justo de escolher: cada demo de voz usa um texto diferente."]},{"t":"passos","itens":["**Filtre na biblioteca de vozes** (ou peça ao Claude): idioma português, sotaque brasileiro, gênero e uso (narração, documentário).","**Separe 3 vozes** que combinem com o seu tom: para mistério e investigação, vozes graves e calmas; para curiosidades e negócios, vozes mais conversacionais.","**Gere a mesma frase de teste** com as 3.","**Ouça no celular**, com e sem fone, que é como o seu público vai ouvir.","**Escolha 1 e salve o ID** no arquivo \"Meu canal\" e nas instruções do Projeto."]},{"t":"prompt","rotulo":"FRASE DE TESTE · ELEVENLABS","x":"Em fevereiro de dois mil e vinte e cinco, hackers levaram um vírgula cinco\nbilhão de dólares de uma só corretora. É o maior roubo de criptomoedas da história."},{"t":"tabela","rotulo":"EXEMPLO DE COMPARAÇÃO","cab":["CRITÉRIO","VOZ A","VOZ B","VOZ C"],"larg":["34%","22%","22%","22%"],"linhas":[["Clareza no celular","Boa","Ótima","Boa"],["Combina com o tom (sério)","Não","Sim","Sim"],["Pronuncia bem números","Sim","Sim","Não"],["**Escolhida**","","**✓**",""]]},{"t":"prompt","x":"Use o ElevenLabs conectado.\nMeu canal: [nome], tom [3 adjetivos], público [quem].\n1. Busque vozes em português do Brasil adequadas para narração [grave e calma /\n   conversacional]. Liste 5 com nome, ID e por que combinam.\n2. Gere esta frase de teste com as 3 melhores: [cole a frase de teste].\n3. Nomeie os arquivos teste-voz-A, teste-voz-B e teste-voz-C.\n4. Me lembre de salvar o ID da voz que eu escolher."},{"t":"erros","itens":[["Escolher pela demo do site.","Cada demo usa um texto diferente e engana.","compare as 3 vozes na mesma frase."],["Voz com sotaque diferente do seu público.","Soa estranho para quem assiste.","filtre por português do Brasil."],["Trocar de voz a cada vídeo.","O canal perde identidade.","uma voz fixa, com o ID salvo."],["Usar voz que imita uma pessoa real ou famosa, ou clonar a voz de alguém sem permissão.","Viola regras das plataformas e pode gerar problema legal.","use vozes da biblioteca ou a sua própria."]]}],"tarefa":"Teste 3 vozes com a frase de teste, ouça no celular, escolha 1 e salve o ID.","check":["3 vozes testadas na mesma frase","Ouvidas no celular","Voz escolhida","ID salvo no arquivo \"Meu canal\" e no Projeto"]},{"id":"3.2","titulo":"CONFIGURAÇÕES QUE IMPORTAM","blocos":[{"t":"porque","itens":["**Os ajustes mudam o jeito de falar** da mesma voz: mais constante ou mais expressiva.","**Uma configuração padrão** mantém todos os vídeos no mesmo ritmo e emoção.","**Mudar uma coisa por vez** é o único jeito de saber o que melhorou."]},{"t":"tabela","cab":["AJUSTE","O QUE FAZ","PONTO DE PARTIDA PARA CANAL DARK"],"larg":["18%","46%","36%"],"linhas":[["Estabilidade","Mais alta = mais constante; mais baixa = mais expressiva","Meio do controle"],["Similaridade","Quanto a voz se mantém fiel à original","Alta"],["Modelo","Qualidade, expressividade e idiomas","O mais recente que suporte português"],["Formato","Qualidade do arquivo","MP3 44,1 kHz"]]},{"t":"nota","x":"Os nomes e as opções dos ajustes podem mudar no ElevenLabs. Os valores acima são uma recomendação geral, não uma regra."},{"t":"passos","itens":["**Gere a frase de teste** com a configuração padrão.","**Mude um único ajuste** e gere de novo.","**Compare as duas** no celular e fique com a melhor.","**Anote a configuração final** junto do ID da voz."]},{"t":"tabela","rotulo":"PROBLEMA → AJUSTE","cab":["O QUE VOCÊ OUVE","O QUE FAZER"],"larg":["45%","55%"],"linhas":[["Voz robótica, sem emoção","Baixe um pouco a estabilidade"],["Voz muda muito de uma cena para outra","Suba a estabilidade"],["Voz não parece a original","Suba a similaridade"],["Respirações ou ruídos estranhos","Gere de novo; se continuar, teste outro modelo"]]},{"t":"prompt","x":"Use o ElevenLabs conectado, com a voz [ID].\nGere esta frase duas vezes: [frase de teste].\n- Versão 1: estabilidade [valor A]\n- Versão 2: estabilidade [valor B]\nMantenha todo o resto igual. Nomeie os arquivos config-1 e config-2.\nSe o conector não permitir mudar esse ajuste, me diga como fazer no site."},{"t":"erros","itens":[["Mudar vários ajustes de uma vez.","Você não sabe o que melhorou ou piorou.","um ajuste por teste."],["Estabilidade no mínimo para \"dar emoção\".","A voz fica instável e muda entre as cenas.","faça pequenos ajustes a partir do meio."],["Não anotar a configuração.","O próximo vídeo sai diferente.","salve o ID e a configuração juntos."]]}],"tarefa":"Gere a mesma frase com 2 configurações, escolha a melhor e anote a configuração padrão do canal.","check":["2 versões comparadas","Configuração padrão anotada junto do ID da voz"]},{"id":"3.3","titulo":"ESCREVENDO PARA O OUVIDO","blocos":[{"t":"porque","itens":["**A voz lê exatamente o que está escrito.** Símbolos, siglas e algarismos podem sair errados.","**Pontuação é pausa.** Vírgula é pausa curta, ponto é pausa longa e dois-pontos criam suspense antes de uma revelação.","**Frases curtas** soam naturais. Frases longas soam como alguém lendo um documento."]},{"t":"tabela","rotulo":"ANTES E DEPOIS","cab":["ESCRITO ASSIM","A VOZ LÊ MELHOR ASSIM"],"larg":["45%","55%"],"linhas":[["US$ 1,5 bi","um vírgula cinco bilhão de dólares"],["21/02/2025","vinte e um de fevereiro de dois mil e vinte e cinco"],["50%","cinquenta por cento"],["FBI","éfe-bê-í (ou teste como a voz lê)"],["O hacker, que usou um método sofisticado e que já tinha sido visto antes, atacou.","O hacker atacou. O método era sofisticado. E já tinha sido visto antes."],["O culpado era o próprio funcionário.","O culpado: o próprio funcionário."]]},{"t":"passos","itens":["**Passe a narração pelo prompt** abaixo antes de gerar a voz.","**Teste siglas e nomes estrangeiros** numa geração curta antes do vídeo inteiro.","**Use tags de emoção com cuidado.** Alguns modelos mais novos aceitam instruções entre colchetes, em inglês, como [whispers]. Teste antes, porque nem todo modelo aceita."]},{"t":"prompt","x":"Adapte esta narração para voz neural em português do Brasil: [texto].\nRegras:\n- números, datas, porcentagens e moedas por extenso\n- siglas escritas como se pronunciam (ou mantidas, se forem lidas como palavra)\n- frases de até 20 palavras; quebre as longas\n- dois-pontos antes das revelações\n- nada de parênteses, emojis ou símbolos\nNão mude os fatos. Mostre o antes e o depois de cada frase alterada."},{"t":"erros","itens":[["Deixar algarismos e símbolos (%, R$, US$).","A voz lê errado ou de um jeito estranho.","tudo por extenso na narração."],["Siglas sem teste.","Algumas são lidas letra por letra; outras, como palavra.","gere um teste curto e ajuste a escrita."],["Frases com várias vírgulas e explicações no meio.","A voz perde o ritmo.","quebre em frases curtas."],["Parênteses e travessões.","A voz não sabe como entoar.","transforme em outra frase."]]}],"tarefa":"Adapte a narração do seu primeiro roteiro com o prompt e teste as siglas e nomes difíceis.","check":["Narração adaptada (números e datas por extenso)","Siglas e nomes testados","Nenhuma frase com mais de 20 palavras"]},{"id":"3.4","titulo":"UMA FALA POR CENA","blocos":[{"t":"porque","itens":["**Se uma cena sai errada, você refaz só ela,** sem gastar créditos com o vídeo todo.","**Na edição, cada fala vira uma cena:** a duração da cena é a duração da fala mais meio segundo, e o vídeo segue o ritmo da voz.","**Arquivos numerados** (01, 02, 03...) evitam cenas fora de ordem na montagem."]},{"t":"passos","itens":["**Gere uma fala por cena**, uma de cada vez.","**Nomeie na ordem:** 01, 02, 03... ou com o padrão de nome do canal.","**Ouça cada fala** procurando palavra errada, pausa estranha ou entonação fora do tom.","**Refaça só o que estiver errado**, indicando o número da cena.","**Guarde tudo na pasta 02-audios** do vídeo."]},{"t":"exemplo","rotuloAntes":"UMA FALA SÓ","rotuloDepois":"UMA FALA POR CENA","antes":"video1.mp3 (75 segundos)\nA voz errou um nome na cena 5. Para corrigir, você gera os 75 segundos de novo, e o resto pode sair diferente.","depois":"2025-03-14_golpe-corretora_cena01.mp3\n2025-03-14_golpe-corretora_cena02.mp3\n...\n2025-03-14_golpe-corretora_cena07.mp3\nA cena 5 errou? Você refaz só a cena 5.","pre":true},{"t":"prompt","rotulo":"PROMPT · CLAUDE (REFAZER UMA CENA)","x":"Use o ElevenLabs conectado, com a voz [ID] e a mesma configuração de antes.\nRefaça só a cena [nº] com este texto: [texto corrigido].\nProblema da versão anterior: [ex.: leu \"FBI\" como palavra / pausa longa no meio].\nSalve com o mesmo nome do arquivo antigo, terminado em _v2."},{"t":"erros","itens":[["Gerar o texto inteiro de uma vez.","Um erro obriga a refazer tudo.","uma fala por cena."],["Arquivos com nomes genéricos (\"audio (3)\").","As cenas saem fora de ordem na edição.","numere na ordem das cenas."],["Não ouvir antes de editar.","O erro só aparece com o vídeo pronto.","ouça cada fala logo depois de gerar."]]}],"tarefa":"Gere e baixe todas as falas do seu primeiro vídeo, uma por cena, e ouça cada uma.","check":["Todas as falas do 1º vídeo geradas","Arquivos numerados na ordem das cenas","Todas ouvidas e corrigidas","Salvas na pasta 02-audios"]},{"id":"3.5","titulo":"TRILHA SONORA SEM PROBLEMA DE DIREITOS","blocos":[{"t":"porque","itens":["**Música famosa embutida no vídeo** pode deixar o vídeo sem som, bloqueado ou com a receita indo para o dono da música.","**A trilha certa segura a atenção** e dá o clima, mas precisa ficar bem abaixo da voz.","**Uma trilha padrão do canal** reforça a identidade, como a voz e as cores."]},{"t":"passos","itens":["**Escolha a saída:** trilha própria gerada no ElevenLabs, ou música da biblioteca do Instagram e do TikTok, adicionada no próprio app.","**No YouTube, use sempre a trilha do ElevenLabs.**","**Peça a música em inglês,** porque o modelo costuma seguir melhor.","**Na montagem, a música fica baixa** e abaixa ainda mais quando a voz fala (isso se chama ducking).","**Confira a licença:** o plano gratuito do ElevenLabs costuma ter regras mais restritas de uso comercial. Antes de monetizar, veja na página de planos se o seu inclui uso comercial."]},{"t":"prompt","rotulo":"PROMPT · ELEVENLABS (MÚSICA)","x":"Instrumental only, no vocals. Dark investigative documentary underscore,\nabout [1 minute 30 seconds]. Slow tempo, low pulsing synth bass, soft\nticking percussion, sparse piano, subtle strings. Steady and minimal so\nit sits under a voice-over. Soft fade out at the end."},{"t":"nota","x":"Gere uma faixa e reaproveite em vários vídeos do mesmo estilo. Se for usar a música da biblioteca do app, peça ao Claude o vídeo **sem trilha** (aula 4.2) e adicione a música na hora de postar."},{"t":"exemplo","antes":"Uma música famosa de suspense colocada no vídeo. O vídeo é publicado e pode ficar mudo, ser bloqueado em alguns países ou ter a receita direcionada ao dono da música.","depois":"Uma trilha própria do canal, gerada uma vez, usada em todos os vídeos de investigação, sempre baixa sob a voz. Sem risco de direitos e com identidade."},{"t":"erros","itens":[["Música alta demais.","Ninguém entende a narração.","música bem abaixo da voz, com ducking."],["Trilha com voz ou letra.","Compete com a narração.","peça \"instrumental only, no vocals\"."],["Usar a música do app e também exportar o vídeo com trilha.","Fica com duas músicas ao mesmo tempo.","se for usar a do app, exporte sem trilha."],["Monetizar sem conferir a licença do plano.","Pode violar os termos de uso.","confira a página de planos antes."]]}],"tarefa":"Gere a trilha padrão do canal com o prompt, ouça embaixo de uma fala do seu vídeo e salve na pasta do canal.","check":["Trilha do canal gerada e salva","Testada embaixo da voz","Licença do plano conferida"]}],"checklist":["ElevenLabs conectado ao Claude","Voz escolhida e ID salvo","Configuração padrão definida","Narração adaptada para o ouvido","Falas do 1º vídeo geradas, cena por cena","Trilha do canal salva"],"video":{"src":"videos/modulo-3.mp4","poster":"videos/modulo-3.jpg","dur":60}},{"n":4,"titulo":"EDIÇÃO, CAPAS E AJUSTE POR PRINT","capaTitulo":["EDIÇÃO, CAPAS E AJUSTE","POR PRINT"],"arquivo":"modulo-4-edicao-capas-e-print","meta":"CERCA DE 2 HORAS COM AS TAREFAS","resumo":"Padrão visual, o Claude montando o vídeo, margens seguras, capas clicáveis e correções precisas.","aoFinal":"o primeiro vídeo editado, com capa e thumbnail, pronto para postar.","aulas":[{"id":"4.1","titulo":"O PADRÃO VISUAL DO VÍDEO","blocos":[{"t":"porque","itens":["**Repetir o mesmo padrão** em todos os vídeos é o que torna o canal reconhecível em meio segundo.","**Elementos fixos economizam decisões:** você não pensa onde vai o título a cada vídeo.","**Uma ideia e um visual por cena** deixam a mensagem clara até para quem assiste sem som."]},{"t":"tabela","rotulo":"ELEMENTOS FIXOS DE UMA CENA","cab":["ELEMENTO","ONDE FICA","PARA QUÊ"],"larg":["24%","32%","44%"],"linhas":[["Título da cena","Parte de cima","Diz do que a cena trata"],["Legenda com palavra-chave","Meio, com a palavra-chave na cor de destaque","Quem está sem som acompanha"],["Ícone ou cena","Centro","Mostra a ideia"],["Selo do caso","Canto, sempre o mesmo","Identifica a série ou o canal"],["Fonte","Rodapé, letra pequena","Credibilidade"]]},{"t":"passos","itens":["**Mande o guia visual** (aula 1.3) para o Claude.","**Peça o padrão de cena** vertical e horizontal, com o prompt abaixo.","**Defina a transição padrão:** corte seco ou uma cortina na cor do canal.","**Salve o padrão** no Projeto: ele será usado em todos os vídeos."]},{"t":"exemplo","antes":"Cada cena com o texto num lugar diferente, legenda em cima do ícone e três cores de destaque. Quem vê não sabe para onde olhar.","depois":"Título sempre no topo, legenda no meio com só a palavra-chave em vermelho, um ícone no centro e a fonte no rodapé. Cada elemento entra quando a voz fala dele."},{"t":"prompt","x":"Com base no meu guia visual [cole ou anexe], defina o padrão de cena dos meus\nvídeos verticais (1080x1920) e horizontais (1920x1080):\n- posição do título, da legenda com a palavra-chave destacada, do selo do caso\n  e da fonte no rodapé\n- tamanho mínimo das letras para leitura no celular\n- transição entre cenas\n- margens seguras do Reels, TikTok e Shorts\n- regra: nada de texto sobre texto ou sobre ícone; cada elemento entra quando a voz\n  fala dele\nMostre um exemplo de cena pronta de cada formato como imagem e escreva um resumo\ndo padrão para eu colar no meu Projeto."},{"t":"erros","itens":[["Texto sobre texto ou sobre ícone.","Fica ilegível.","cada elemento no seu lugar fixo."],["Elemento que aparece antes de a voz falar dele.","Distrai e entrega a história antes da hora.","sincronize com a fala."],["Letras pequenas.","No celular ninguém lê.","defina um tamanho mínimo no padrão."],["Mudar o padrão a cada vídeo.","O canal perde identidade.","mude só depois de testar e decidir."]]}],"tarefa":"Gere o seu padrão de cena com o Claude, aprove os dois exemplos (vertical e horizontal) e salve o resumo no Projeto.","check":["Padrão vertical aprovado","Padrão horizontal aprovado","Transição definida","Resumo do padrão salvo no Projeto"]},{"id":"4.2","titulo":"O CLAUDE MONTA O VÍDEO","blocos":[{"t":"p","x":"Você não precisa de editor de vídeo. No app do Claude no computador, ele escreve o código das animações, sincroniza com as falas, mixa a trilha e entrega o arquivo final."},{"t":"porque","itens":["**Tudo sincronizado pela voz:** cada cena dura o tempo da fala mais meio segundo, então não sobra silêncio.","**Animações simples prendem mais do que efeitos pesados:** ícones, bonecos, gráficos e números subindo.","**A mesma conversa vira um molde.** Nos próximos vídeos, basta pedir \"mesmo padrão, novo roteiro\"."]},{"t":"passos","itens":["**Abra o Projeto do canal** no app do Claude no computador.","**Envie o roteiro em cenas, as falas numeradas, a trilha e o padrão de cena.**","**Use o prompt abaixo.**","**Peça para o Claude conferir um quadro de cada cena** antes de renderizar o vídeo final.","**Assista no celular** e anote o que ajustar (aula 4.5)."]},{"t":"exemplo","rotuloAntes":"PRIMEIRO VÍDEO","rotuloDepois":"DO SEGUNDO EM DIANTE","antes":"Você envia o roteiro, as falas, a trilha e o padrão, e explica tudo com o prompt completo.","depois":"\"Mesmo padrão do vídeo anterior. Novo roteiro: [cole]. Falas: [anexe]. Mesma trilha.\"\nO Claude reaproveita o que já foi definido, e você só revisa."},{"t":"prompt","rotulo":"PROMPT · CLAUDE (APP NO COMPUTADOR)","x":"Monte o vídeo do meu roteiro [cole as cenas] no meu padrão de cena [cole].\n- Use as falas que você gerou no ElevenLabs (uma por cena, na ordem dos números),\n  cortando o silêncio do começo e do fim de cada uma\n- Cada cena dura o tempo da fala + 0,5 s; cada texto e ícone entra só quando a voz\n  fala dele; nada de texto sobre texto ou sobre ícone\n- Animações simples: ícones, bonecos, gráficos e números subindo\n- Trilha [arquivo, \"gere no ElevenLabs\" ou \"sem trilha\"] baixa, abaixando sob a voz\n- Respeite as margens seguras do Reels, TikTok e Shorts\n- Confira um quadro de cada cena antes de renderizar e me mostre\n- Exporte MP4 vertical 1080x1920 e horizontal 1920x1080"},{"t":"erros","itens":[["Falas fora de ordem ou com nomes confusos.","As cenas trocam de lugar.","numere os arquivos (aula 3.4)."],["Pedir animações complexas demais.","O vídeo demora, trava ou sai com erros.","comece simples; complique só se precisar."],["Não pedir a conferência de quadros.","Os erros só aparecem no vídeo pronto.","peça um quadro de cada cena antes de renderizar."],["Revisar só no computador.","No celular, textos podem ficar pequenos ou cobertos.","assista no celular antes de postar."]]}],"tarefa":"Peça ao Claude a montagem do seu primeiro vídeo e assista no celular.","check":["Quadros de cada cena conferidos","MP4 vertical exportado","MP4 horizontal exportado","Assistido no celular","Lista de ajustes anotada"]},{"id":"4.3","titulo":"MARGENS SEGURAS DO REELS, TIKTOK E SHORTS","blocos":[{"t":"porque","itens":["**Os apps cobrem partes da tela:** a parte de baixo, com a legenda e o nome do perfil, e a lateral direita, com os botões.","**Texto coberto é informação perdida.** Se a palavra-chave fica embaixo do botão de curtir, ninguém lê.","**A capa também é recortada:** na grade do perfil do Instagram aparece só o centro da capa, num recorte 3:4."]},{"t":"passos","itens":["**Regra prática:** deixe textos e ícones importantes entre o topo e cerca de 3/4 da altura da tela, e longe da borda direita.","**Peça ao Claude um quadro com as áreas marcadas** sobre uma cena do seu vídeo.","**Suba tudo o que estiver baixo demais** e afaste da direita o que estiver encostado.","**Na capa, mantenha o essencial no centro.**"]},{"t":"nota","x":"Cada app tem uma área um pouco diferente, e ela muda com atualizações. A regra acima é uma recomendação geral, que funciona bem nos três."},{"t":"exemplo","antes":"A legenda com a palavra-chave fica no rodapé da tela. No TikTok, ela aparece embaixo da descrição do vídeo e ninguém lê.","depois":"A legenda sobe para a altura do meio da tela, o ícone fica no centro e a fonte vai para o canto esquerdo, acima da área coberta."},{"t":"prompt","x":"Pegue um quadro de cada cena do meu vídeo [anexe ou use o vídeo que você montou].\nDesenhe por cima, em vermelho transparente, as áreas que costumam ser cobertas\nno Reels, no TikTok e no Shorts (parte de baixo e lateral direita).\nListe os elementos que caem nessas áreas e corrija o vídeo subindo ou afastando\ncada um, sem mudar o resto."},{"t":"erros","itens":[["Legenda no rodapé.","Fica embaixo da descrição do vídeo.","suba a legenda."],["Ícone encostado na direita.","Fica atrás dos botões.","afaste da borda direita."],["Capa com texto nas bordas.","É cortado na grade do perfil.","mantenha o texto no centro."]]}],"tarefa":"Confira o seu primeiro vídeo com o prompt e suba tudo o que estiver baixo ou encostado na direita.","check":["Áreas cobertas conferidas","Nenhum texto importante coberto","Capa com o essencial no centro"]},{"id":"4.4","titulo":"CAPAS QUE GERAM CLIQUE","blocos":[{"t":"porque","itens":["**A capa decide o clique** no YouTube, na busca e na grade do perfil.","**Poucas palavras grandes** são lidas em meio segundo, mesmo em miniatura.","**O símbolo do canal sempre no mesmo canto** faz o público reconhecer seus vídeos."]},{"t":"passos","itens":["**Regra das 4 palavras:** no máximo 4 palavras grandes.","**Um número, um contraste e um elemento visual forte.**","**Tamanhos:** thumbnail 1280x720 (YouTube) e capa vertical 1080x1920 (Reels e TikTok).","**Gere 3 opções** e escolha olhando em tamanho pequeno, como aparece no celular.","**A capa complementa o título, não repete.** Se o título é uma pergunta, a capa mostra o número ou a cena."]},{"t":"exemplo","antes":"Capa com a frase \"Como hackers conseguiram roubar um bilhão e meio de dólares de uma corretora\", em letra pequena, com 4 cores e uma foto escura.","depois":"Fundo quase preto, \"1,5 BILHÃO\" enorme em creme com o número em vermelho, um cadeado quebrado e o símbolo do canal no canto. Título do vídeo: \"Como hackers roubaram 1,5 bilhão sem arrombar nada?\""},{"t":"prompt","x":"Crie 3 opções de thumbnail (1280x720) e capa vertical (1080x1920) para o vídeo\n\"[título]\" do canal [nome], seguindo meu guia visual: [cores e fontes].\nRegras:\n- no máximo 4 palavras grandes; um número em destaque\n- um elemento visual forte e fácil de entender pequeno\n- símbolo do canal sempre no [canto]\n- nada de texto sobre texto; essencial no centro (recorte 3:4 do Instagram)\n- a capa complementa o título, não repete\nEntregue como imagens prontas e mostre também cada uma em tamanho pequeno,\ncomo aparece no celular. Diga qual deve ter mais cliques e por quê."},{"t":"erros","itens":[["Frase inteira na capa.","Ninguém lê em miniatura.","até 4 palavras."],["Capa que repete o título.","Desperdiça espaço.","mostre o número ou a cena que o título não mostra."],["Promessa que o vídeo não cumpre.","Gera abandono e denúncia.","a capa mostra o que realmente acontece."],["Escolher olhando em tela grande.","Pequena, ela pode não funcionar.","avalie em tamanho de celular."]]}],"tarefa":"Faça a capa e a thumbnail do primeiro vídeo e escolha olhando em tamanho pequeno.","check":["Thumbnail 1280x720 pronta","Capa vertical 1080x1920 pronta","Até 4 palavras, com número em destaque","Símbolo do canal no canto padrão","Testada em tamanho pequeno"]},{"id":"4.5","titulo":"AJUSTE POR PRINT: A CORREÇÃO EXATA","blocos":[{"t":"porque","itens":["**Pedido vago gera correção errada.** \"Ficou estranho\" obriga o Claude a adivinhar.","**O print mostra exatamente o problema,** sem precisar descrever tudo.","**Um ajuste por item, numerado,** evita que algo seja esquecido ou que o Claude mude o que estava bom."]},{"t":"passos","itens":["**Assista ao vídeo e pause** no momento exato do problema.","**Tire o print** e anote o número da cena ou o tempo.","**Use a fórmula:** ONDE + O QUE ESTÁ ERRADO + COMO DEVE FICAR.","**Liste todos os ajustes** num pedido só, numerados.","**Termine com \"mantenha todo o resto igual\".**"]},{"t":"exemplo","antes":"\"O vídeo ficou estranho no meio, arruma aí.\"","depois":"\"Cena 4 (0:12): o texto ELES MESMOS ASSINARAM encosta nos bonecos. Suba o texto e deixe 20 px de espaço. Mantenha todo o resto igual.\""},{"t":"prompt","rotulo":"MODELO DE PEDIDO · CLAUDE","x":"[anexe o print]\nAjustes no vídeo \"[nome]\":\n1. Cena [nº / tempo]: [o que está errado] → [como deve ficar].\n2. Cena [nº / tempo]: [o que está errado] → [como deve ficar].\nMantenha todo o resto igual. Mostre o quadro corrigido de cada cena antes de\nexportar de novo."},{"t":"erros","itens":[["Descrever sem print.","O Claude pode corrigir o lugar errado.","sempre anexe o print."],["Um ajuste por mensagem.","Cada um gera uma nova exportação.","junte tudo num pedido numerado."],["Esquecer \"mantenha todo o resto igual\".","Outras partes podem mudar sem você pedir.","termine sempre com essa frase."]]}],"tarefa":"Revise o seu primeiro vídeo no celular e peça todos os ajustes num único pedido, no formato acima.","check":["Prints dos problemas tirados","Pedido numerado enviado","Vídeo final aprovado"]}],"checklist":["Padrão de cena definido","Primeiro vídeo montado pelo Claude","Vídeo dentro das margens seguras","Capa e thumbnail prontas","Ajustes feitos por print"],"video":{"src":"videos/modulo-4.mp4","poster":"videos/modulo-4.jpg","dur":64}},{"n":5,"titulo":"POSTAGEM E ALGORITMO","capaTitulo":["POSTAGEM E ALGORITMO"],"arquivo":"modulo-5-postagem-e-algoritmo","meta":"CERCA DE 1H45 COM AS TAREFAS","resumo":"O que o algoritmo observa, horários, SEO do YouTube, legendas e a primeira hora depois de postar.","aoFinal":"o primeiro vídeo postado nas 3 redes, com título, legenda e horário certos, e a rotina para analisar os resultados.","aulas":[{"id":"5.1","titulo":"O QUE O ALGORITMO MEDE","blocos":[{"t":"p","x":"As plataformas não divulgam a fórmula exata. Mas, em geral, funcionam assim: mostram o vídeo para um grupo pequeno, observam a reação e, se a reação for boa, mostram para mais gente."},{"t":"porque","itens":["**Os sinais que costumam pesar** são retenção (quanto do vídeo as pessoas assistem), replay, compartilhamentos, salvamentos e comentários.","**Aproveitar o algoritmo é dar motivos** para ele distribuir o seu vídeo, não tentar enganá-lo.","**Por isso o gancho e o roteiro valem mais que qualquer truque** de postagem."]},{"t":"tabela","rotulo":"SINAL → COMO PROVOCAR","cab":["SINAL","O QUE FAZER NO VÍDEO"],"larg":["28%","72%"],"linhas":[["**Retenção**","Gancho sem introdução; uma pergunta aberta em cada cena (aulas 2.3 e 2.4)"],["**Replay**","Final que conecta com o começo, ou um detalhe rápido que dá vontade de rever"],["**Compartilhamento**","Informação útil ou surpreendente que a pessoa queira mostrar a alguém (\"cuidado com esse golpe\")"],["**Salvamento**","Dicas práticas que a pessoa quer guardar (\"3 sinais de golpe no Pix\")"],["**Comentários**","Pergunta simples no final, que qualquer um consegue responder"]]},{"t":"exemplo","antes":"Vídeo com 20 segundos de introdução, sem pergunta no final, com 25 hashtags e um pedido de \"curta e compartilhe\" no começo.","depois":"Começa no fato mais forte, cada cena deixa uma dúvida, termina com \"Você já recebeu uma mensagem assim? Conta aqui\", usa poucas hashtags relevantes e mostra um sinal de alerta que dá vontade de enviar para a família."},{"t":"prompt","x":"Analise este roteiro como se fosse a primeira vez que alguém o assiste: [cole].\nPara cada cena, diga:\n- risco de a pessoa sair aqui (baixo, médio ou alto) e por quê\n- o que daria vontade de compartilhar, salvar ou comentar\nDepois, sugira até 3 mudanças que aumentem a retenção sem mudar os fatos.\nNão invente números de desempenho: fale em termos gerais."},{"t":"erros","itens":[["Comprar seguidores, curtidas ou visualizações.","Costuma derrubar o alcance e pode levar a punição.","cresça só com o conteúdo."],["Repostar vídeo de terceiros.","Pode tirar o vídeo do ar e prejudicar o canal inteiro.","só conteúdo próprio."],["Hashtags em excesso.","Parece spam e não ajuda.","poucas e relevantes (aula 5.4)."],["Achar que o horário salva um vídeo fraco.","O que decide é a reação de quem assiste.","invista no gancho e no roteiro primeiro."]]}],"tarefa":"Rode o prompt no roteiro do seu primeiro vídeo e aplique até 3 melhorias antes de postar.","check":["Roteiro analisado cena por cena","Até 3 melhorias aplicadas","Pergunta final clara para comentários"]},{"id":"5.2","titulo":"MELHORES HORÁRIOS (BRASIL)","blocos":[{"t":"porque","itens":["**Postar quando o seu público está online** aumenta a chance de reação rápida, que ajuda na distribuição.","**Não existe horário mágico.** Os horários abaixo são um ponto de partida, uma recomendação geral para o Brasil, não uma regra.","**Os dados do seu perfil valem mais que qualquer tabela.** Depois de 2 a 3 semanas, use as estatísticas do seu público."]},{"t":"tabela","rotulo":"PONTO DE PARTIDA (RECOMENDAÇÃO GERAL)","cab":["REDE","PONTO DE PARTIDA","MOTIVO"],"larg":["24%","34%","42%"],"linhas":[["TikTok","19h às 21h","Pico depois do trabalho"],["Instagram Reels","18h30 às 20h e 12h às 13h","Pausa do almoço e fim do dia"],["YouTube Shorts","12h ou 18h","Distribui aos poucos até a noite"],["YouTube (longo)","17h às 18h","Fica disponível antes do pico da noite"]]},{"t":"passos","itens":["**Escolha um horário fixo por rede** a partir da tabela.","**Poste sempre nos mesmos dias e horários** nas primeiras semanas, para comparar resultados.","**Agende** pelas ferramentas das próprias redes, quando disponíveis.","**Depois de 2 a 3 semanas**, abra as estatísticas do perfil, veja quando seus seguidores estão online e ajuste."]},{"t":"exemplo","antes":"Postar quando o vídeo fica pronto: segunda às 2h da manhã, quinta às 15h, sábado às 23h. Impossível saber se o problema foi o vídeo ou o horário.","depois":"Terça, quarta e quinta às 19h30 no TikTok e no Reels, e às 18h no Shorts, durante 3 semanas. Depois, ajuste com os dados do próprio perfil."},{"t":"prompt","x":"Meu canal: [nome]. Público: [quem]. Vídeos por semana: [nº].\nRedes: TikTok, Instagram Reels, YouTube Shorts [e YouTube longo, se tiver].\nMonte um calendário de postagem para as próximas 3 semanas, usando estes horários\ncomo ponto de partida: [cole a tabela da aula].\nInclua: qual vídeo vai em cada dia (da minha lista: [títulos]) e um lembrete\npara eu revisar as estatísticas do perfil no fim da 3ª semana.\nDeixe claro que os horários são recomendação geral, não regra."},{"t":"erros","itens":[["Mudar o horário a cada post.","Você não aprende nada com os resultados.","mantenha fixo por algumas semanas."],["Copiar o horário de outro canal.","O público dele não é o seu.","comece pela tabela e ajuste com os seus dados."],["Postar e sumir.","A primeira hora importa (aula 5.5).","poste num horário em que você possa responder comentários."]]}],"tarefa":"Agende o primeiro vídeo no horário de partida e defina os horários da semana.","check":["Horário fixo definido para cada rede","Primeiro vídeo agendado","Lembrete para revisar as estatísticas em 3 semanas"]},{"id":"5.3","titulo":"SEO PARA YOUTUBE","blocos":[{"t":"p","x":"SEO é deixar o vídeo fácil de encontrar na busca. No YouTube, isso depende principalmente do título, da descrição e dos capítulos."},{"t":"porque","itens":["**O título precisa ser buscado e clicado ao mesmo tempo:** palavra-chave para a busca, promessa para o clique.","**O título costuma aparecer cortado** em muitas telas. Por isso o mais importante vai no começo.","**As primeiras linhas da descrição** aparecem antes do \"mostrar mais\" e ajudam a explicar do que trata o vídeo.","**Capítulos** ajudam quem assiste a navegar e podem aparecer na busca."]},{"t":"passos","itens":["**Título:** palavra-chave no começo + promessa clara. Como referência, cerca de 60 caracteres costumam aparecer inteiros.","**Descrição:** 2 primeiras linhas resumindo o vídeo; depois as fontes (aula 2.6) e os capítulos.","**Capítulos:** tempo de início + nome de cada parte (no roteiro longo, aula 2.5).","**Thumbnail** da aula 4.4 e **legendas** (o YouTube gera automaticamente; revise os nomes próprios).","**Cartões e tela final** apontando para o próximo vídeo do mesmo pilar."]},{"t":"exemplo","rotuloAntes":"TÍTULO FRACO","rotuloDepois":"TÍTULO FORTE","antes":"\"Vocês não vão acreditar no que aconteceu com essa empresa!!!\"\nNão tem palavra-chave, ninguém busca isso e parece clickbait.","depois":"\"Golpe na Bybit: como hackers levaram 1,5 bilhão sem arrombar nada\"\nA palavra-chave está no começo, e a promessa é clara e real."},{"t":"prompt","x":"Vídeo: [tema]. Roteiro: [cole]. Canal: [nome]. Fontes: [cole as fontes da aula 2.6].\nCrie para o YouTube:\n1. 5 opções de título: palavra-chave no início, promessa real, até cerca de\n   60 caracteres. Conte os caracteres. Marque o mais forte.\n2. Descrição: 2 primeiras linhas fortes resumindo o vídeo; depois as fontes com\n   links; depois os capítulos com tempo (se for vídeo longo).\n3. 10 palavras-chave que as pessoas realmente buscariam sobre esse assunto.\nNada de promessa exagerada ou que o vídeo não cumpre."},{"t":"erros","itens":[["Título sem palavra-chave.","O vídeo não aparece na busca.","comece pelo termo que as pessoas digitam."],["Título exagerado.","Gera abandono e desconfiança.","prometa só o que o vídeo entrega."],["Descrição vazia.","Perde contexto e não mostra as fontes.","use o modelo do prompt."],["Lista enorme de palavras-chave na descrição.","Parece spam.","escreva frases naturais."]]}],"tarefa":"Publique o primeiro vídeo no YouTube com o título, a descrição e as fontes do prompt.","check":["Título com palavra-chave no começo","Descrição com resumo e fontes","Thumbnail enviada","Cartão ou tela final para outro vídeo"]},{"id":"5.4","titulo":"LEGENDAS E HASHTAGS","blocos":[{"t":"porque","itens":["**A primeira linha da legenda** aparece antes do \"mais\" e precisa segurar a pessoa, como o gancho.","**Uma pergunta na legenda** convida a comentar.","**Poucas hashtags relevantes** ajudam a explicar o assunto. Muitas parecem spam."]},{"t":"passos","itens":["**Primeira linha = o gancho** do vídeo.","**Corpo de 3 a 5 linhas:** resumo, fontes e uma pergunta.","**Até 5 hashtags:** 1 do canal, 2 do nicho e 2 do assunto. Os limites das redes mudam, então confira as regras atuais.","**Adapte para cada rede** sem mudar a essência: o TikTok costuma pedir textos mais curtos."]},{"t":"exemplo","antes":"\"Vídeo novo!! 🔥🔥 #fyp #viral #foryou #golpe #dinheiro #crypto #bitcoin #hacker #news #brasil #trend...\"","depois":"\"Um bilhão e meio de dólares. Sumiram num único dia.\nA corretora Bybit foi atacada em fevereiro de 2025, e quem aprovou a transferência foram os próprios funcionários.\nFontes: comunicado da empresa e alerta do FBI.\nVocê confiaria seu dinheiro numa corretora?\n#rastrodogolpe #golpes #segurancadigital #criptomoedas #bybit\""},{"t":"prompt","x":"Escreva a legenda do vídeo \"[título]\" para Instagram e para TikTok.\nGancho do vídeo: [gancho]. Fontes: [fontes].\n- Primeira linha = o gancho\n- Depois 3 a 5 linhas com o resumo, as fontes e uma pergunta para comentar\n- Termine com até 5 hashtags: 1 do canal ([#seucanal]), 2 do nicho e 2 do assunto\n- Versão do TikTok mais curta\nNada de promessas exageradas nem hashtags genéricas (#fyp, #viral)."},{"t":"erros","itens":[["Legenda que começa com \"vídeo novo\".","Desperdiça a linha mais importante.","comece pelo gancho."],["Hashtags genéricas (#fyp, #viral).","Não dizem nada sobre o assunto.","use hashtags do nicho e do assunto."],["Muitas hashtags.","Parece spam.","até 5."],["Sem pergunta.","Menos comentários.","termine o texto com uma pergunta simples."]]}],"tarefa":"Gere as legendas e poste o primeiro vídeo no Instagram e no TikTok.","check":["Legenda começando pelo gancho","Fontes e pergunta na legenda","Até 5 hashtags relevantes","Vídeo postado no Instagram e no TikTok"]},{"id":"5.5","titulo":"A PRIMEIRA HORA DEPOIS DE POSTAR","blocos":[{"t":"porque","itens":["**Conversa nos comentários** é um sinal de interesse e traz a pessoa de volta ao vídeo.","**Um comentário fixado** direciona a conversa e pode levar ao próximo vídeo.","**O gráfico de retenção mostra onde as pessoas saem.** É o melhor guia para melhorar o próximo roteiro."]},{"t":"passos","itens":["**Na primeira hora:** responda todos os comentários, de preferência com outra pergunta.","**Fixe um comentário** com uma pergunta ou com o link do próximo vídeo.","**Depois de cerca de 48 horas:** abra as estatísticas e veja a retenção.","**Encontre o ponto de queda:** em qual cena muita gente saiu?","**Anote no arquivo \"Meu canal\"** e corrija no próximo roteiro."]},{"t":"exemplo","rotuloAntes":"O QUE OS DADOS MOSTRAM","rotuloDepois":"O QUE MUDAR","antes":"Muita gente sai por volta dos 10 segundos, na cena 3 (o contexto da empresa).","depois":"Corte o contexto para uma frase e passe direto para \"como aconteceu\". No próximo vídeo, teste o contexto depois da primeira pista."},{"t":"prompt","x":"Dados do meu vídeo \"[título]\" depois de 48 h: [cole visualizações, retenção média,\npontos de queda, comentários e compartilhamentos, como aparecem nas estatísticas].\nRoteiro em cenas: [cole].\n1. Relacione cada ponto de queda à cena do roteiro.\n2. Explique o provável motivo de cada queda.\n3. Dê 3 mudanças concretas para o próximo roteiro.\nNão invente números: use só os que eu colei."},{"t":"erros","itens":[["Postar e sumir.","Você perde a conversa da primeira hora.","reserve a primeira hora para responder."],["Olhar só as visualizações.","Elas não dizem por que o vídeo foi bem ou mal.","olhe a retenção e os pontos de queda."],["Apagar um vídeo que foi mal logo no primeiro dia.","Alguns vídeos demoram a ser distribuídos.","espere e use os dados para aprender."]]}],"tarefa":"Faça a rotina da primeira hora no seu primeiro vídeo e, depois de 48 h, rode o prompt com os dados. Repita para os 3 primeiros vídeos.","check":["Comentários respondidos na primeira hora","Comentário fixado","Retenção dos 3 primeiros vídeos anotada","Ponto de saída de cada um identificado","3 mudanças anotadas para o próximo roteiro"]}],"checklist":["Roteiro analisado antes de postar","Horários definidos","Pacote de SEO no YouTube","Legendas e hashtags no Instagram e TikTok","Rotina da primeira hora","Análise de retenção feita"],"video":{"src":"videos/modulo-5.mp4","poster":"videos/modulo-5.jpg","dur":64}},{"n":6,"titulo":"MONETIZAÇÃO","capaTitulo":["MONETIZAÇÃO"],"arquivo":"modulo-6-monetizacao","meta":"CERCA DE 1H30 COM AS TAREFAS","resumo":"YouTube, TikTok, Instagram, receitas fora das plataformas e um plano de 90 dias.","aoFinal":"você sabe o que falta para monetizar em cada rede e tem um plano de 90 dias. Os requisitos mudam: confira sempre a página oficial de cada plataforma. Nenhuma estratégia garante um valor de ganho.","aulas":[{"id":"6.1","titulo":"YOUTUBE: REQUISITOS E APROVAÇÃO COM IA","blocos":[{"t":"porque","itens":["**O Programa de Parcerias do YouTube** exige um número mínimo de inscritos e de horas assistidas (vídeos longos) ou de visualizações (Shorts) num período. Os números mudam: veja os atuais na página oficial.","**O ponto mais importante para canal dark:** o YouTube costuma recusar conteúdo repetitivo, produzido em massa ou reaproveitado de terceiros.","**A IA é ferramenta, não o produto.** O que o YouTube monetiza é o seu trabalho: a escolha do assunto, a pesquisa, o roteiro e a montagem."]},{"t":"passos","itens":["**Confira os requisitos atuais** na página oficial do Programa de Parcerias.","**Garanta variedade:** vídeos diferentes entre si em assunto e estrutura de história, mesmo com o mesmo padrão visual.","**Mostre valor próprio:** pesquisa com fontes, roteiro original e narração que explica, não só lê.","**Marque conteúdo alterado ou sintético quando a regra pedir.** O YouTube pede essa marcação para conteúdo realista que possa ser confundido com real. Confira a regra atual ao publicar.","**Use Shorts para crescer e vídeos longos para faturar.** Em geral, vídeos longos pagam mais por visualização.","**Antes de pedir a monetização,** faça a auditoria do canal com o prompt abaixo."]},{"t":"exemplo","rotuloAntes":"CANAL COM RISCO DE RECUSA","rotuloDepois":"CANAL COM MAIS CHANCE","antes":"40 vídeos com o mesmo texto-modelo trocando só o nome do caso, imagens genéricas, sem fontes, e a mesma frase de abertura em todos.","depois":"Cada vídeo com pesquisa própria e fontes na descrição, roteiro com estrutura de investigação, ganchos diferentes e animações que explicam o caso.","extra":[{"t":"nota","x":"Exemplo ilustrativo. A aprovação é decidida pelo YouTube e nenhuma estratégia garante o resultado."}]},{"t":"prompt","rotulo":"PROMPT · CLAUDE (AUDITORIA DO CANAL)","x":"Vou pedir a monetização do meu canal no YouTube. Canal: [nome], nicho [nicho].\nAqui estão os títulos e as descrições dos meus últimos [nº] vídeos: [cole].\nAvalie, como um revisor rigoroso:\n1. Os vídeos parecem repetitivos ou produzidos em massa? Onde?\n2. Cada vídeo mostra pesquisa e valor próprio? Quais menos?\n3. Há algo que pareça reaproveitado de terceiros?\n4. Há vídeo que precise da marcação de conteúdo alterado ou sintético?\n5. Liste as 5 correções mais importantes antes de pedir a monetização.\nLembre-me de conferir os requisitos atuais na página oficial. Não invente regras."},{"t":"erros","itens":[["Copiar o mesmo roteiro e trocar só o nome.","É o tipo de conteúdo mais recusado.","cada vídeo com pesquisa e história próprias."],["Reaproveitar vídeos e imagens de outros canais.","Pode levar à recusa e a punições.","só material próprio ou criado pelo Claude."],["Pedir a monetização assim que bater os números.","Um canal com problemas pode ser recusado.","faça a auditoria e corrija antes."]]}],"tarefa":"Leia os requisitos atuais na página oficial e rode a auditoria com os vídeos que você já tem. Anote o que falta.","check":["Requisitos atuais conferidos na página oficial","Auditoria feita","5 correções anotadas"]},{"id":"6.2","titulo":"TIKTOK","blocos":[{"t":"porque","itens":["**O programa de recompensas do TikTok** paga por vídeos acima de 1 minuto, com requisitos de idade, seguidores e visualizações recentes. Os números e a disponibilidade mudam: confira na página oficial e no app.","**Vídeos de 1 a 3 minutos com retenção alta** costumam ser o formato que mais rende no programa.","**Alongar sem enrolar é uma habilidade:** mais investigação, não mais palavras."]},{"t":"passos","itens":["**Confira no app** se o programa está disponível no seu país e na sua conta, e quais são os requisitos atuais.","**Planeje versões de mais de 1 minuto** dos seus roteiros curtos.","**Alongue com conteúdo:** uma pista a mais, uma virada a mais, um detalhe que poucos sabem.","**Confira a retenção** das versões longas (aula 5.5) e compare com as curtas."]},{"t":"exemplo","rotuloAntes":"ALONGAR ERRADO","rotuloDepois":"ALONGAR CERTO","antes":"Mesmo roteiro de 55 segundos com frases repetidas, pausas longas e uma introdução nova para passar de 1 minuto.","depois":"Mesmo caso, com 2 cenas novas: como os investigadores rastrearam o dinheiro e o que a corretora fez depois. O vídeo fica com cerca de 80 segundos, e cada segundo a mais é informação."},{"t":"prompt","x":"Este é o roteiro de um vídeo curto de [duração]: [cole].\nTransforme em uma versão de 70 a 100 segundos para o TikTok:\n- acrescente 1 ou 2 cenas com informação nova (pista, virada, consequência)\n- não repita frases nem crie introdução\n- mantenha o gancho e a chamada final\n- liste as fontes dos dados novos para eu conferir (aula 2.6)"},{"t":"erros","itens":[["Enrolar para passar de 1 minuto.","A retenção cai, e o vídeo rende menos.","acrescente informação, não palavras."],["Achar que o programa está disponível para todos.","Depende de país, idade e conta.","confira no app."],["Postar só vídeos longos.","Vídeos curtos também ajudam a ganhar seguidores.","combine os dois e compare."]]}],"tarefa":"Confira no app se o programa está disponível para você e transforme um roteiro curto numa versão de mais de 1 minuto.","check":["Disponibilidade e requisitos conferidos no app","1 roteiro com mais de 1 minuto pronto","Dados novos com fonte"]},{"id":"6.3","titulo":"INSTAGRAM","blocos":[{"t":"porque","itens":["**As ferramentas de monetização do Instagram** incluem assinaturas, presentes, bônus (por convite) e parcerias pagas. A disponibilidade varia por país e conta.","**O caminho mais comum para canal dark é a parceria com marcas** do seu nicho, que pagam por uma integração no vídeo.","**O mídia kit** é o documento que mostra a uma marca por que anunciar com você. Ter um pronto acelera a negociação."]},{"t":"passos","itens":["**Confira no app** quais ferramentas de monetização estão disponíveis para a sua conta.","**Liste 10 marcas que combinam com o nicho** (para um canal de golpes: apps de segurança, bancos digitais, gerenciadores de senha).","**Monte o mídia kit** com o prompt, usando os seus números reais, mesmo que pequenos.","**Planeje uma integração natural:** a marca entra como parte da história, não como interrupção.","**Sinalize sempre como publicidade** (ex.: #publi e a marcação de parceria paga da rede)."]},{"t":"exemplo","rotuloAntes":"INTEGRAÇÃO FORÇADA","rotuloDepois":"INTEGRAÇÃO NATURAL","antes":"No meio da investigação: \"Pausa rápida para falar do nosso patrocinador, use o cupom...\" e depois a história volta.","depois":"No fim de um vídeo sobre senhas vazadas: \"Esse golpe começa com uma senha repetida. Por isso eu uso o [app de senhas], parceiro deste vídeo.\" A marca resolve o problema do vídeo, e o post vai sinalizado como publicidade."},{"t":"prompt","x":"Crie um mídia kit de 1 página para o canal [nome] (nicho: [nicho]).\nNúmeros reais: [seguidores por rede, alcance médio, visualizações médias,\npúblico (idade, gênero, cidades), como aparecem nas estatísticas].\nInclua:\n- quem somos, em 2 linhas\n- por que anunciar (o público e o tipo de confiança que o canal tem)\n- formatos: vídeo dedicado, menção no vídeo, stories\n- 3 exemplos de integração natural com marcas do meu nicho\n- e-mail de contato: [e-mail do canal]\nUse só os números que eu passei. Entregue como uma página visual no meu guia visual."},{"t":"erros","itens":[["Aceitar marca fora do nicho ou duvidosa.","Quebra a confiança do público, ainda mais num canal sobre golpes.","aceite só marcas que você indicaria."],["Não sinalizar publicidade.","Engana o público e pode violar regras de publicidade.","marque sempre como parceria paga."],["Inflar os números no mídia kit.","A marca descobre pelas estatísticas.","use números reais."]]}],"tarefa":"Liste 10 marcas que combinam com o seu nicho e monte o rascunho do mídia kit com os seus números atuais.","check":["Ferramentas disponíveis conferidas no app","10 marcas listadas","Mídia kit com números reais","1 ideia de integração natural"]},{"id":"6.4","titulo":"RECEITAS ALÉM DA PLATAFORMA","blocos":[{"t":"porque","itens":["**Depender só do pagamento das plataformas é arriscado:** as regras e os valores mudam sem aviso.","**O público de um canal de nicho** costuma ter necessidades em comum, e isso abre outras fontes de receita.","**Começar pequeno** (um link de afiliado, um produto simples) mostra o que funciona antes de investir tempo."]},{"t":"tabela","cab":["FONTE","COMO FUNCIONA","CUIDADO"],"larg":["20%","42%","38%"],"linhas":[["**Afiliados**","Você indica um produto ligado ao nicho e ganha uma comissão por venda","Sinalize como publicidade; só indique o que faz sentido"],["**Publicidade direta**","Uma marca paga por uma integração no vídeo (aula 6.3)","Integração natural e sinalizada"],["**Produto próprio**","E-book, guia, curso curto","Faça depois de ter um público que confia em você"],["**Serviço**","Produzir vídeos dark para outros canais e empresas","Seu próprio canal é o portfólio"]]},{"t":"passos","itens":["**Escolha 1 fonte para começar**, a que combina melhor com o seu momento.","**Teste por algumas semanas** e meça o resultado.","**Só depois adicione outra.**"]},{"t":"exemplo","antes":"Link de 8 produtos sem relação com o canal na bio, sem aviso de publicidade, e a promessa de um \"curso para ficar rico com canal dark\".","depois":"Um link de afiliado de um gerenciador de senhas, citado num vídeo sobre senhas vazadas e marcado como publicidade. Mais tarde, um guia em PDF: \"10 golpes do Pix e como se proteger\"."},{"t":"prompt","x":"Meu canal: [nome], nicho [nicho], público [quem], seguidores [números atuais].\n1. Sugira 5 ideias de receita fora da plataforma que combinem com meu público,\n   com: como funciona, esforço (baixo, médio ou alto) e quando faz sentido começar.\n2. Recomende a melhor para começar agora e um plano de 4 semanas para testar.\n3. Para afiliados: que tipos de produto combinam com o nicho (sem citar valores\n   de comissão que você não tem certeza).\nNada de promessa de ganho: fale em termos gerais."},{"t":"erros","itens":[["Prometer ganhos (\"fique rico com...\").","Engana o público e pode ser propaganda enganosa.","nunca prometa valores."],["Lançar produto antes de ter público.","Ninguém compra.","construa confiança primeiro."],["Link de afiliado sem aviso.","Quebra a confiança e as regras de publicidade.","sinalize sempre."],["Tentar tudo ao mesmo tempo.","Você não sabe o que funciona.","uma fonte por vez."]]}],"tarefa":"Rode o prompt e escolha 1 fonte de receita para testar nas próximas 4 semanas.","check":["1 fonte de receita escolhida","Plano de teste de 4 semanas anotado","Sei como sinalizar publicidade"]},{"id":"6.5","titulo":"ESCALA","blocos":[{"t":"porque","itens":["**Escalar é repetir com menos esforço,** não trabalhar mais horas.","**Os modelos que você criou no curso** (guia visual, prompt-modelo, padrão de cena, voz e trilha) são o que permite produzir mais em menos tempo.","**Consistência ganha de intensidade:** um ritmo que você mantém por meses vale mais que uma semana de 10 vídeos e um mês parado."]},{"t":"tabela","rotulo":"ROTINA SEMANAL (EXEMPLO)","cab":["DIA","O QUE FAZER"],"larg":["22%","78%"],"linhas":[["**Dia 1**","Pautas e roteiros da semana (Módulo 2), com checagem de fatos"],["**Dia 2**","Voz e montagem com o Claude (Módulos 3 e 4)"],["**Dia 3**","Revisão por print, capas e agendamento (Módulos 4 e 5)"],["**Todo dia**","Primeira hora depois de postar e respostas aos comentários"],["**Fim da semana**","Análise de retenção e 3 melhorias para a próxima"]]},{"t":"passos","itens":["**Reúna seus modelos** no Projeto do Claude: guia visual, prompt-modelo, padrão de cena, ID da voz, configuração e trilha.","**Produza em lote:** todos os roteiros da semana num dia, todas as vozes no outro.","**Defina uma meta realista** de vídeos por semana, que você consiga manter.","**Revise a cada 30 dias** o que funcionou e o que mudar.","**Um segundo canal só quando o primeiro tiver rotina estável.**"]},{"t":"exemplo","antes":"Cada vídeo feito do zero, em dias aleatórios, com prompts reescritos toda vez. Três vídeos numa semana, nenhum nas duas seguintes.","depois":"Segunda: 4 roteiros. Terça: vozes e montagem. Quarta: ajustes, capas e agendamento. Quatro vídeos por semana, toda semana, usando os mesmos modelos."},{"t":"prompt","x":"Monte meu plano de 90 dias para o canal [nome]. Tenho [horas] por semana.\nMeta: [nº de vídeos] por semana nas 3 redes.\nMeus modelos prontos: [liste: guia visual, prompt-modelo, padrão de cena, voz, trilha].\nDivida em 3 fases de 30 dias. Para cada fase:\n- rotina semanal dia a dia\n- metas de processo (vídeos postados, análises feitas) e de métricas (retenção,\n  seguidores) como referência, não promessa\n- o que analisar ao fim da fase e que decisão tomar com isso\nSe a minha meta não couber nas minhas horas, diga e ajuste."},{"t":"erros","itens":[["Meta maior do que o seu tempo.","Você queima e para.","comece com um ritmo que dá para manter."],["Abrir um segundo canal cedo.","Os dois ficam fracos.","só com o primeiro em rotina estável."],["Não revisar o plano.","Você repete o que não funciona.","revise a cada 30 dias."]]}],"tarefaFinal":"Gere seu plano de 90 dias, coloque a rotina semanal na agenda e cole o plano na parede.","check":["Modelos reunidos no Projeto","Rotina semanal definida","Plano de 90 dias pronto","Data da primeira revisão (30 dias) na agenda"]}],"checklistTitulo":"CHECKLIST FINAL","checklist":["Canal com identidade completa","Biblioteca de prompts","Voz e trilha do canal","Modelo de edição e de capa","Primeiros vídeos postados e analisados","Requisitos de monetização conferidos","Plano de 90 dias"],"video":{"src":"videos/modulo-6.mp4","poster":"videos/modulo-6.jpg","dur":56}}]};
+</script>
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+
+  const ICONES = {
+    m0: '<circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/>',
+    m1: '<path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.8-.9 1.4-1.9-.5-1.2.3-2.6 1.6-2.6H17a4 4 0 0 0 4-4c0-5-4-9.5-9-9.5z"/><circle cx="7.5" cy="11.5" r="1.1"/><circle cx="10" cy="7.2" r="1.1"/><circle cx="15" cy="7.6" r="1.1"/>',
+    m2: '<path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9 11h7M9 14.5h7M9 18h4"/>',
+    m3: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M9 21h6"/>',
+    m4: '<rect x="3" y="7" width="18" height="13" rx="1.5"/><path d="M3 11h18M3.5 7 6 3.5l15 3.2M8 4.5l2.5 3M13 5.5l2.5 3"/>',
+    m5: '<path d="M12 15V4M7.5 8.5 12 4l4.5 4.5"/><path d="M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/>',
+    m6: '<path d="M4 19h16"/><path d="M5 15.5l4.5-4.5 3.5 3.5L19 8.5"/><path d="M14.5 8.5H19V13"/>',
+    curso: '<path d="M3 6.5 12 3l9 3.5-9 3.5z"/><path d="M7 8.5v5c0 1.5 2.2 3 5 3s5-1.5 5-3v-5M21 6.5V12"/>',
+    relogio: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+    aulas: '<path d="M5 5h14M5 10h14M5 15h9M5 20h6"/>',
+    ferr: '<path d="M14.5 6.5a4 4 0 0 1-5.3 5.3L4 17l3 3 5.2-5.2a4 4 0 0 1 5.3-5.3l-2.4-.6z"/>',
+    copiar: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/>',
+    check: '<path d="M5 12.5 10 17 19 7.5"/>',
+    pdf: '<path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/>',
+    dl: '<path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19h14"/>',
+    roteiro: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9.5v5l4-2.5z"/>',
+    apoio: '<path d="M5 4h11l3 3v13H5z"/><path d="M8 10h8M8 13.5h8M8 17h5"/>',
+    tarefa: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 12.5 11 15l4.5-5"/>',
+    prompt: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9.5l3 2.5-3 2.5M12 15h5"/>',
+    luz: '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>',
+    passos: '<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 5.5l1-.5v3M4 11.2c.3-.4.8-.6 1.2-.4.6.3.5 1-.1 1.5L4 13.5h2M4 17h1.6a.8.8 0 0 1 0 1.6H4.8h.8a.8.8 0 0 1 0 1.6H4"/>',
+    exemplo: '<rect x="3" y="5" width="8" height="14" rx="1.5"/><rect x="13" y="5" width="8" height="14" rx="1.5"/><path d="M15.5 12l1.5 1.5 2.5-3"/>',
+    erro: '<circle cx="12" cy="12" r="8.5"/><path d="M9 9l6 6M15 9l-6 6"/>',
+    tabela: '<rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3 10h18M9 10v9"/>',
+    lista: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h8M8 17h5"/>'
+  };
+  const ico = (k, extra = '') => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true" ${extra}>${ICONES[k]}</svg>`;
+
+  // ---------- progresso (só neste navegador) ----------
+  const CHAVE = 'canal-dark-progresso-v1';
+  let prog = { aulas: {}, check: {} };
+  try { prog = Object.assign(prog, JSON.parse(localStorage.getItem(CHAVE) || '{}')); } catch (e) {}
+  const salvar = () => { try { localStorage.setItem(CHAVE, JSON.stringify(prog)); } catch (e) {} };
+
+  const MODS = DADOS.modulos;
+  const totalAulas = MODS.reduce((n, m) => n + m.aulas.length, 0);
+  const feitasMod = m => m.aulas.filter(a => prog.aulas[a.id]).length;
+
+  function atualizaGeral() {
+    const f = MODS.reduce((n, m) => n + feitasMod(m), 0);
+    $('#pg-txt').textContent = `${f}/${totalAulas} AULAS`;
+    $('#pg-bar').style.width = (f / totalAulas * 100) + '%';
+    MODS.forEach(m => {
+      const card = $(`#card-${m.n}`); if (!card) return;
+      const f2 = feitasMod(m), t = m.aulas.length;
+      card.querySelector('.mini i').style.width = (f2 / t * 100) + '%';
+      const est = card.querySelector('.estado');
+      est.className = 'estado' + (f2 === t ? ' feito' : f2 ? ' andando' : '');
+      est.textContent = f2 === t ? 'CONCLUÍDO' : f2 ? `${f2}/${t} AULAS` : 'NÃO INICIADO';
+    });
+    aplicaFiltro();
+  }
+
+  // ---------- timeline do hero ----------
+  const voz = $('#f-voz'), tri = $('#f-tri');
+  for (let i = 0; i < 64; i++) {
+    const v = document.createElement('i'); v.style.height = (20 + Math.abs(Math.sin(i * 1.7) * 70) + (i % 5) * 4) + '%'; v.style.animationDelay = (-(i % 9) * .13) + 's'; voz.appendChild(v);
+    const t = document.createElement('i'); t.style.height = (30 + Math.abs(Math.sin(i * .35) * 50)) + '%'; t.style.animationDelay = (-(i % 7) * .3) + 's'; tri.appendChild(t);
+  }
+  const cenas = [...document.querySelectorAll('.tela .cena')];
+  const cab = $('#cabeca'), tc = $('#tc');
+  const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const DUR = 12000; let t0 = performance.now();
+  function anda(now) {
+    const p = ((now - t0) % DUR) / DUR;
+    const faixa = voz.getBoundingClientRect(), base = cab.parentElement.getBoundingClientRect();
+    cab.style.left = (faixa.left - base.left + p * faixa.width) + 'px';
+    const s = p * 72; tc.textContent = `00:${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+    const c = Math.min(cenas.length - 1, Math.floor(p * cenas.length));
+    cenas.forEach((el, i) => el.classList.toggle('on', i === c));
+    if (!reduz) requestAnimationFrame(anda);
+  }
+  requestAnimationFrame(anda);
+
+  // ---------- fluxo ----------
+  const etapas = ['ideia', 'roteiro', 'voz', 'edição', 'capa', 'postagem', 'análise'];
+  $('#fluxo').innerHTML = etapas.map((e, i) => `${i ? '<span class="seta">→</span>' : ''}<span class="passo" data-i="${i}">${String(i + 1).padStart(2, '0')} ${e}</span>`).join('');
+  const passos = [...document.querySelectorAll('.passo')]; let pi = 0;
+  const giraFluxo = () => { passos.forEach((p, i) => p.classList.toggle('on', i === pi)); pi = (pi + 1) % passos.length; };
+  giraFluxo(); if (!reduz) setInterval(giraFluxo, 1400);
+
+  // ---------- grade de módulos ----------
+  const ferramentas = m => {
+    const txt = JSON.stringify(m.aulas);
+    return { claude: /Claude/.test(txt), elevenlabs: /ElevenLabs/.test(txt) };
+  };
+  const mmss = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  const pausaVideos = () => document.querySelectorAll('#player video').forEach(v => { try { v.pause(); } catch (e) {} });
+  const minutos = m => m.aulas.reduce((n, a) => n + Math.max(2, Math.round(JSON.stringify(a).split(/\s+/).length / 180)), 0);
+  $('#grade').innerHTML = MODS.map((m, k) => `
+    <article class="card" id="card-${m.n}" style="--k:${k}" data-claude="${ferramentas(m).claude}" data-eleven="${ferramentas(m).elevenlabs}">
+      <div class="topo-c"><div class="ico">${ico('m' + m.n)}</div><div class="num">${m.n}</div></div>
+      <div><div class="kick" style="font-size:11px;margin-bottom:8px">Módulo ${m.n}</div><h3>${esc(m.titulo)}</h3></div>
+      <p>${md(m.resumo)}</p>
+      <div class="meta">${m.video ? `<span>${ico('roteiro')}videoaula ${mmss(m.video.dur)}</span>` : ''}<span>${ico('aulas')}<b data-conta="${m.aulas.length}">${m.aulas.length}</b> aulas</span><span>${ico('relogio')}<b data-conta="${minutos(m)}">${minutos(m)}</b> min de leitura</span><span>${ico('ferr')}${esc(m.meta.toLowerCase())}</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="estado">NÃO INICIADO</span><div class="mini" style="flex:1"><i></i></div></div>
+      <div class="pe">
+        <a class="bt pri abrir" href="#modulo-${m.n}">${ico('aulas')}Abrir módulo</a>
+        <a class="bt" href="#modulo-${m.n}" data-pdf="1" title="Ver o PDF na página">${ico('pdf')}PDF</a>
+        <button class="bt so-dl" type="button" data-dl="${m.arquivo}" title="Baixar o PDF" aria-label="Baixar o PDF do módulo ${m.n}" hidden>${ico('dl')}</button>
+      </div>
+    </article>`).join('') + `
+    <article class="card completo-curso" style="--k:7">
+      <div class="topo-c"><div class="ico" style="background:var(--red);color:#fff">${ico('curso')}</div><div class="num">PDF</div></div>
+      <div class="txt"><div class="kick" style="font-size:11px">Material completo</div><h3>Curso completo em um só PDF</h3><p>Os 7 módulos juntos, 20 páginas, para ler do começo ao fim ou imprimir.</p></div>
+      <div class="pe"><a class="bt pri abrir" href="#curso-completo">${ico('pdf')}Ver PDF</a><button class="bt so-dl" type="button" data-dl="curso-canal-dark" hidden>${ico('dl')}Baixar</button></div>
+    </article>`;
+  // abrir direto na aba PDF
+  document.addEventListener('click', e => { const a = e.target.closest('[data-pdf]'); if (a) abrirNaAba = 'pdf'; });
+
+  let filtro = 'todos';
+  function aplicaFiltro() {
+    MODS.forEach(m => {
+      const c = $(`#card-${m.n}`);
+      const ok = filtro === 'todos' || (filtro === 'pendentes' && feitasMod(m) < m.aulas.length)
+        || (filtro === 'claude' && c.dataset.claude === 'true') || (filtro === 'elevenlabs' && c.dataset.eleven === 'true');
+      c.hidden = !ok;
+    });
+  }
+  document.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => {
+    filtro = b.dataset.f; document.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', x === b)); aplicaFiltro();
+  }));
+
+  // como funciona
+  const cadaIco = ['luz', 'exemplo', 'prompt', 'erro', 'tarefa', 'lista'];
+  $('#cada').innerHTML = DADOS.curso.comoFunciona.itens.map((t, i) => {
+    const m = t.match(/^\*\*(.+?):\*\*\s*(.*)$/);
+    return `<div><div class="ico">${ico(cadaIco[i])}</div><b>${esc(m[1])}</b><span>${md(m[2])}</span></div>`;
+  }).join('');
+  $('#nota-rodape').textContent = DADOS.curso.comoFunciona.nota;
+
+  // ---------- player ----------
+  const player = $('#player'), corpo = $('#pcorpo');
+  let atual = null, abrirNaAba = 'aulas';
+
+  function blocoPrompt(b, chave) {
+    const destaque = esc(b.texto).replace(/\[[^\]\n]+\]/g, '<span class="ph">$&</span>');
+    return `<div class="rot">${ico('prompt')}${esc(b.rotulo)}</div>
+      <div class="prompt"><div class="pc"><span style="display:flex;align-items:center"><span class="pts"><i></i><i></i><i></i></span>${/ELEVENLABS \(M/.test(b.rotulo) ? 'ELEVENLABS' : /FRASE/.test(b.rotulo) ? 'TEXTO PARA NARRAR' : 'CLAUDE'}</span>
+      <button class="copiar" type="button" data-copiar="${chave}">${ico('copiar')}Copiar</button></div><pre id="${chave}">${destaque}</pre></div>`;
+  }
+  function botaoFeito(a, rotulo) {
+    const on = !!prog.aulas[a.id];
+    return `<button class="feito-bt" type="button" data-aula="${a.id}" aria-pressed="${on}"><span class="bol">✓</span><span class="lb">${on ? 'Concluída' : rotulo}</span></button>`;
+  }
+  const mdl = s => md(s).replace(/\n/g, '<br>');
+  const palavras = a => JSON.stringify(a).split(/\s+/).length;
+  const leitura = a => Math.max(2, Math.round(palavras(a) / 180));
+  function tabelaHTML(b) {
+    return `${b.rotulo ? `<div class="rot">${ico('tabela')}${esc(b.rotulo)}</div>` : ''}<div class="tabela-x"><table><thead><tr>${b.cab.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${b.linhas.map(l => '<tr>' + l.map(c => `<td>${md(c)}</td>`).join('') + '</tr>').join('')}</tbody></table></div>`;
+  }
+  function blocoHTML(b, chave) {
+    switch (b.t) {
+      case 'p': return `<p class="par">${md(b.x)}</p>`;
+      case 'sub': return `<h4 class="subt">${esc(b.x)}</h4>`;
+      case 'nota': return `<p class="nota">${md(b.x)}</p>`;
+      case 'pre': return `<pre class="pre-cl">${esc(b.x)}</pre>`;
+      case 'porque': return `<div class="rot">${ico('luz')}${esc(b.rotulo || 'Por que isso importa')}</div><ul class="porque">${b.itens.map(i => `<li>${md(i)}</li>`).join('')}</ul>`;
+      case 'passos': return `${b.semRotulo ? '' : `<div class="rot">${ico('passos')}${esc(b.rotulo || 'Como fazer')}</div>`}<ol class="passos">${b.itens.map(i => `<li>${md(i)}</li>`).join('')}</ol>`;
+      case 'tabela': return tabelaHTML(b);
+      case 'prompt': return blocoPrompt({ rotulo: b.rotulo || 'PROMPT · CLAUDE', texto: b.x }, chave);
+      case 'erros': return `<div class="rot">${ico('erro')}Erros comuns e como evitar</div><div class="erros">${b.itens.map(([e, pq, ev]) =>
+        `<details class="erro"><summary><span class="xx">✕</span><b>${md(e)}</b></summary><p>${md(pq)}</p><p class="ev"><span>Como evitar:</span> ${md(ev)}</p></details>`).join('')}</div>`;
+      case 'exemplo': {
+        const cel = (lab, txt, cls) => `<div class="${cls}"><div class="exl">${esc(lab)}</div>${b.pre ? `<pre class="expre">${esc(txt)}</pre>` : `<p>${mdl(txt)}</p>`}</div>`;
+        return `<div class="rot">${ico('exemplo')}Exemplo prático</div><div class="exemplo"><div class="exg${b.pre ? ' pilha' : ''}">` +
+          cel(b.rotuloAntes || 'ANTES', b.antes, 'exa') + cel(b.rotuloDepois || 'DEPOIS', b.depois, 'exd') + '</div>' +
+          (b.extra ? `<div class="exextra">${b.extra.map((x, i) => blocoHTML(x, chave + 'x' + i)).join('')}</div>` : '') + '</div>';
+      }
+    }
+    return '';
+  }
+  function aulaHTML(a, m) {
+    const base = a.id.replace('.', '-');
+    let h = `<section class="aula" id="aula-${base}"><h3><span class="id">${a.id}</span> · ${esc(a.titulo)}</h3><span class="dur">${ico('relogio')}LEITURA DE CERCA DE ${leitura(a)} MIN</span>`;
+    h += a.blocos.map((b, i) => blocoHTML(b, `p-${base}-${i}`)).join('');
+    const tf = a.tarefa || a.tarefaFinal;
+    if (tf) h += `<div class="tarefa"><div class="tx"><div class="tl">${a.tarefaFinal ? 'TAREFA FINAL' : 'TAREFA · 15 MIN'}</div>${md(tf)}</div>${botaoFeito(a, 'Marcar como feita')}</div>`;
+    else h += `<div class="so-concluir">${botaoFeito(a, 'Marcar aula como concluída')}</div>`;
+    if (a.check) h += `<div class="check check-aula"><h4>Checklist da aula</h4>${a.check.map((c, i) => {
+      const k = `a${base}-${i}`; return `<label><input type="checkbox" id="ck-${k}" data-ck="${k}" ${prog.check[k] ? 'checked' : ''}><span>${md(c)}</span></label>`; }).join('')}</div>`;
+    return h + '</section>';
+  }
+
+  function montaPlayer(m) {
+    atual = m;
+    $('#p-kick').textContent = m.n === 'curso' ? 'Material completo' : `Módulo ${m.n} · ${m.meta}`;
+    $('#p-titulo').textContent = m.titulo;
+    const lado = document.querySelector('.lado');
+    if (m.n === 'curso') {
+      lado.querySelectorAll('.anel,.lista-aulas,.nav-mod').forEach(el => el.hidden = true);
+      $('#p-aulas').innerHTML = '';
+      $('#aba-aulas').hidden = true;
+    } else {
+      lado.querySelectorAll('.anel,.lista-aulas,.nav-mod').forEach(el => el.hidden = false);
+      $('#aba-aulas').hidden = false;
+      $('#lista-aulas').innerHTML = m.aulas.map(a => `<button type="button" data-ir="${a.id}" class="${prog.aulas[a.id] ? 'feita' : ''}"><span class="bol">✓</span><span class="id">${a.id}</span><span class="nm">${esc(a.titulo)}</span></button>`).join('');
+      let h = '';
+      if (m.video) h += `<div class="videoaula"><div class="rot">${ico('roteiro')}Videoaula do módulo · ${mmss(m.video.dur)}</div>
+        <video id="p-video" controls preload="metadata" playsinline poster="${m.video.poster}" src="${m.video.src}"></video>
+        <p class="nota">Um resumo rápido do módulo. O conteúdo completo, com prompts e tarefas, está logo abaixo.</p></div>`;
+      h += `<div class="ao-final"><b>Ao final:</b> ${md(m.aoFinal)}</div>` + m.aulas.map(a => aulaHTML(a, m)).join('');
+      if (m.checklist) h += `<div class="check"><h4>${esc(m.checklistTitulo || 'CHECKLIST DO MÓDULO ' + m.n)}</h4>${m.checklist.map((c, i) => {
+        const k = `m${m.n}-${i}`; return `<label><input type="checkbox" id="ck-${k}" data-ck="${k}" ${prog.check[k] ? 'checked' : ''}><span>${md(c)}</span></label>`; }).join('')}</div>`;
+      $('#p-aulas').innerHTML = h;
+      const ant = MODS[m.n - 1], prox = MODS[m.n + 1];
+      $('#p-ant').href = ant ? `#modulo-${ant.n}` : '#'; $('#p-ant').style.visibility = ant ? '' : 'hidden';
+      $('#p-prox').href = prox ? `#modulo-${prox.n}` : '#'; $('#p-prox').style.visibility = prox ? '' : 'hidden';
+      atualizaAnel();
+    }
+    $('#p-dl').dataset.dl = m.arquivo;
+    $('#p-dl').lastChild.textContent = m.n === 'curso' ? 'Baixar o curso completo' : 'Baixar PDF do módulo';
+    $('#p-pdf').innerHTML = ''; pdfCarregado = null;
+    mostraAba(m.n === 'curso' ? 'pdf' : abrirNaAba);
+    abrirNaAba = 'aulas';
+    corpo.scrollTop = 0;
+  }
+  function atualizaAnel() {
+    if (!atual || atual.n === 'curso') return;
+    const f = feitasMod(atual), t = atual.aulas.length;
+    $('#anel').style.strokeDashoffset = 138.2 * (1 - f / t);
+    $('#anel-txt').textContent = `${f}/${t}`;
+  }
+  function mostraAba(qual) {
+    if (qual !== 'aulas') pausaVideos();
+    $('#aba-aulas').setAttribute('aria-selected', qual === 'aulas');
+    $('#aba-pdf').setAttribute('aria-selected', qual === 'pdf');
+    $('#p-aulas').hidden = qual !== 'aulas';
+    $('#p-pdf').hidden = qual !== 'pdf';
+    if (qual === 'pdf') carregaPDF();
+  }
+  $('#aba-aulas').addEventListener('click', () => mostraAba('aulas'));
+  $('#aba-pdf').addEventListener('click', () => mostraAba('pdf'));
+
+  function rota() {
+    const h = location.hash.slice(1);
+    const mm = h.match(/^modulo-(\d)$/);
+    let alvo = null;
+    if (mm && MODS[+mm[1]]) alvo = MODS[+mm[1]];
+    if (h === 'curso-completo') alvo = { n: 'curso', titulo: 'Curso completo', arquivo: 'curso-canal-dark', aulas: [] };
+    if (alvo) {
+      if (!atual || atual.n !== alvo.n || player.hidden) montaPlayer(alvo);
+      player.hidden = false; document.body.classList.add('travado');
+      $('#p-voltar').focus({ preventScroll: true });
+    } else {
+      const eraAberto = !player.hidden;
+      pausaVideos();
+      player.hidden = true; document.body.classList.remove('travado');
+      if (eraAberto && atual && atual.n !== 'curso') { const c = $(`#card-${atual.n}`); c && c.scrollIntoView({ block: 'center' }); }
+      atual = null;
+    }
+  }
+  window.addEventListener('hashchange', rota);
+  $('#p-voltar').addEventListener('click', () => { location.hash = 'modulos'; });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !player.hidden) location.hash = 'modulos'; });
+
+  // cliques dentro do player
+  player.addEventListener('click', e => {
+    const ir = e.target.closest('[data-ir]');
+    if (ir) { mostraAba('aulas'); $('#aula-' + ir.dataset.ir.replace('.', '-')).scrollIntoView({ behavior: reduz ? 'auto' : 'smooth', block: 'start' }); return; }
+    const fb = e.target.closest('[data-aula]');
+    if (fb) {
+      const id = fb.dataset.aula; prog.aulas[id] = !prog.aulas[id]; if (!prog.aulas[id]) delete prog.aulas[id]; salvar();
+      const on = !!prog.aulas[id];
+      fb.setAttribute('aria-pressed', on);
+      fb.querySelector('.lb').textContent = on ? 'Concluída' : (fb.closest('.tarefa') ? 'Marcar como feita' : 'Marcar aula como concluída');
+      const li = $(`#lista-aulas [data-ir="${id}"]`); li && li.classList.toggle('feita', on);
+      atualizaAnel(); atualizaGeral();
+      if (on && atual && feitasMod(atual) === atual.aulas.length) aviso(`Módulo ${atual.n} concluído. Bom trabalho!`);
+      return;
+    }
+    const cp = e.target.closest('[data-copiar]');
+    if (cp) {
+      const pre = document.getElementById(cp.dataset.copiar), txt = pre.textContent;
+      const ok = () => { cp.classList.add('ok'); cp.lastChild.textContent = 'Copiado'; setTimeout(() => { cp.classList.remove('ok'); cp.lastChild.textContent = 'Copiar'; }, 1800); };
+      const falha = () => { const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); aviso('Texto selecionado. Use Ctrl+C para copiar.'); };
+      try { navigator.clipboard.writeText(txt).then(ok, falha); } catch (err) { falha(); }
+    }
+  });
+  player.addEventListener('change', e => {
+    const k = e.target.dataset.ck; if (!k) return;
+    if (e.target.checked) prog.check[k] = true; else delete prog.check[k]; salvar();
+  });
+  // aula atual na lista lateral
+  corpo.addEventListener('scroll', () => {
+    if (!atual || atual.n === 'curso' || $('#p-aulas').hidden) return;
+    let cur = null;
+    document.querySelectorAll('#p-aulas .aula').forEach(s => { if (s.getBoundingClientRect().top < 160) cur = s.id; });
+    document.querySelectorAll('#lista-aulas button').forEach(b => b.classList.toggle('atual', cur === 'aula-' + b.dataset.ir.replace('.', '-')));
+  }, { passive: true });
+
+  // ---------- PDF dentro da página (pdf.js) ----------
+  let pdfjsPronto = null, pdfCarregado = null;
+  function carregaScript(src) { return new Promise((ok, erro) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = erro; document.head.appendChild(s); }); }
+  function pdfjs() {
+    if (!pdfjsPronto) {
+      const base = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+      pdfjsPronto = carregaScript(base + 'pdf.min.js').then(() => carregaScript(base + 'pdf.worker.min.js')).then(() => window.pdfjsLib);
+    }
+    return pdfjsPronto;
+  }
+  async function carregaPDF() {
+    if (!atual || pdfCarregado === atual.arquivo) return;
+    const arq = atual.arquivo; pdfCarregado = arq;
+    const box = $('#p-pdf');
+    box.innerHTML = `<p class="aviso">Material original em PDF. ${atual.n === 'curso' ? '' : 'Na aba Aulas os prompts têm botão de copiar.'}</p><div class="carregando"><i></i>Carregando o PDF…</div><div class="paginas"></div>`;
+    try {
+      const lib = await pdfjs();
+      const buf = await (await fetch(`pdf/${arq}.pdf`)).arrayBuffer();
+      if (pdfCarregado !== arq) return;
+      const doc = await lib.getDocument({ data: buf }).promise;
+      box.querySelector('.carregando').remove();
+      const area = box.querySelector('.paginas');
+      const larg = Math.min(area.clientWidth || 800, 860), dpr = Math.min(window.devicePixelRatio || 1, 2);
+      for (let n = 1; n <= doc.numPages; n++) {
+        if (pdfCarregado !== arq) return;
+        const pg = await doc.getPage(n);
+        const vp0 = pg.getViewport({ scale: 1 }), vp = pg.getViewport({ scale: larg / vp0.width * dpr });
+        const c = document.createElement('canvas'); c.width = vp.width; c.height = vp.height;
+        c.setAttribute('aria-label', `Página ${n} de ${doc.numPages}`); c.setAttribute('role', 'img');
+        area.appendChild(c);
+        await pg.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise;
+      }
+    } catch (err) {
+      box.innerHTML = '<p class="aviso">Não foi possível mostrar o PDF aqui. Leia o conteúdo na aba Aulas ou use o botão de download.</p>';
+      pdfCarregado = null;
+    }
+  }
+
+  // ---------- download (capacidade "downloads" do artefato) ----------
+  let downloads = null;
+  const FORA = !(window.claude && window.claude.use); // site comum (ex.: GitHub Pages), fora do Claude
+  async function baixar(arq, bt) {
+    if (FORA) {
+      const a = document.createElement('a'); a.href = `pdf/${arq}.pdf`; a.download = `${arq}.pdf`;
+      document.body.appendChild(a); a.click(); a.remove(); aviso('Download iniciado.'); return;
+    }
+    if (!downloads) return;
+    bt && (bt.disabled = true);
+    try {
+      const blob = await (await fetch(`pdf/${arq}.pdf`)).blob();
+      await downloads.save({ filename: `${arq}.pdf`, data: blob });
+      aviso('Download iniciado.');
+    } catch (err) {
+      const c = err && err.code;
+      if (c === 'declined') aviso('Download cancelado.');
+      else if (c === 'rate_limited') aviso('Já existe um download aguardando confirmação.');
+      else aviso('O download não está disponível aqui.');
+    } finally { bt && (bt.disabled = false); }
+  }
+  document.addEventListener('click', e => { const b = e.target.closest('button[data-dl]'); if (b) baixar(b.dataset.dl, b); });
+  if (FORA) document.querySelectorAll('.so-dl').forEach(b => b.hidden = false);
+  else claude.use('downloads').then(ns => {
+    downloads = ns;
+    if (ns) document.querySelectorAll('.so-dl').forEach(b => b.hidden = false);
+  }).catch(() => {});
+
+  // ---------- aviso ----------
+  let tAviso;
+  function aviso(txt) { const t = $('#toast'); t.textContent = txt; t.classList.add('on'); clearTimeout(tAviso); tAviso = setTimeout(() => t.classList.remove('on'), 2600); }
+
+  // ---------- efeitos de texto ----------
+  // subtítulo palavra por palavra
+  const sub = $('.hero .sub');
+  sub.innerHTML = sub.textContent.trim().split(/\s+/).map((p, i) => `<span class="w" style="--d:${i}">${esc(p)}</span>`).join(' ');
+  // rótulo do topo digitado
+  const kh = $('.hero .kick'), kt = kh.textContent;
+  if (!reduz) {
+    kh.textContent = ''; kh.classList.add('digita'); let ki = 0;
+    const tecla = () => { kh.textContent = kt.slice(0, ++ki); if (ki < kt.length) setTimeout(tecla, 28); else setTimeout(() => kh.classList.remove('digita'), 2200); };
+    setTimeout(tecla, 250);
+  }
+  setTimeout(() => document.documentElement.classList.add('anim-fim'), 3200);
+  // tremida extra no glitch ao passar o mouse
+  const gl = $('.glitch');
+  gl.addEventListener('mouseenter', () => { gl.classList.remove('glitch-on'); void gl.offsetWidth; gl.classList.add('glitch-on'); });
+
+  // contagem dos números
+  function conta(el) {
+    if (el.dataset.feito) return; el.dataset.feito = '1';
+    const alvo = +el.dataset.conta; if (reduz) { el.textContent = alvo; return; }
+    const ini = performance.now(), dur = 1400;
+    const passo = now => { const p = Math.min(1, (now - ini) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = Math.round(alvo * e); if (p < 1) requestAnimationFrame(passo); };
+    el.textContent = '0'; requestAnimationFrame(passo);
+  }
+
+  // revelar ao rolar (só o que começa fora da tela; o resto já aparece pronto)
+  const revelaveis = [...document.querySelectorAll('.secao .kick, .secao h2, .secao .intro, .filtros, .card, .cada > div, .rodape p, .fluxo .wrap')];
+  document.querySelectorAll('.cada > div').forEach((d, i) => d.style.setProperty('--k', i));
+  if ('IntersectionObserver' in window && !reduz) {
+    const io = new IntersectionObserver(ents => ents.forEach(en => {
+      if (!en.isIntersecting) return;
+      const el = en.target; io.unobserve(el);
+      if (el.classList.contains('rv-pre')) {
+        el.classList.remove('rv-pre'); el.classList.add('rv-in');
+        setTimeout(() => { el.classList.remove('rv-in'); }, 1500 + (+getComputedStyle(el).getPropertyValue('--k') || 0) * 80);
+      }
+      el.querySelectorAll ? el.querySelectorAll('[data-conta]').forEach(conta) : 0;
+      if (el.dataset && el.dataset.conta) conta(el);
+    }), { rootMargin: '0px 0px -8% 0px' });
+    revelaveis.forEach(el => { if (el.getBoundingClientRect().top > innerHeight) el.classList.add('rv-pre'); io.observe(el); });
+    document.querySelectorAll('.hero [data-conta]').forEach(el => { el.textContent = '0'; });
+    setTimeout(() => document.querySelectorAll('.hero [data-conta]').forEach(conta), 700);
+  }
+
+  // ---------- fundo animado: ondas de narração ----------
+  // granulado de filme gerado uma vez
+  try {
+    const g = document.createElement('canvas'); g.width = g.height = 140; const gx = g.getContext('2d'), im = gx.createImageData(140, 140);
+    for (let i = 0; i < im.data.length; i += 4) { const v = Math.random() * 255; im.data[i] = im.data[i + 1] = im.data[i + 2] = v; im.data[i + 3] = 255; }
+    gx.putImageData(im, 0, 0); document.documentElement.style.setProperty('--grao', `url(${g.toDataURL()})`);
+  } catch (e) {}
+  const cv = $('#fundo'), cx = cv.getContext('2d');
+  let W = 0, H = 0;
+  const ajusta = () => { W = cv.width = innerWidth; H = cv.height = innerHeight; };
+  ajusta(); addEventListener('resize', ajusta);
+  let ultimo = 0;
+  function desenha(t) {
+    if (!reduz) requestAnimationFrame(desenha);
+    if (t - ultimo < 33 || !player.hidden) return; ultimo = t;
+    cx.clearRect(0, 0, W, H);
+    // forma de onda principal (barras de áudio) atravessando a tela
+    const meio = H * .62, passo = 6;
+    for (let x = 0; x < W; x += passo) {
+      const env = Math.pow(Math.max(0, Math.sin(x * .0035 - t * .00035)), 2) * .9 + .1;
+      const fala = Math.abs(Math.sin(x * .09 + t * .004) * Math.sin(x * .023 - t * .0016));
+      const h = (14 + fala * 90) * env;
+      cx.fillStyle = `rgba(238,28,37,${.05 + env * .13})`;
+      cx.fillRect(x, meio - h / 2, 2, h);
+    }
+    // linhas finas de trilha sonora
+    for (let L = 0; L < 3; L++) {
+      cx.beginPath();
+      const y0 = H * (.2 + L * .27), a = 18 + L * 10, f = .004 + L * .0017, v = .0005 + L * .00025;
+      for (let x = 0; x <= W; x += 8) {
+        const y = y0 + Math.sin(x * f + t * v) * a * Math.sin(x * .0012 + t * .0002 + L);
+        x ? cx.lineTo(x, y) : cx.moveTo(x, y);
+      }
+      cx.strokeStyle = L === 1 ? 'rgba(238,28,37,.16)' : 'rgba(240,235,227,.06)';
+      cx.lineWidth = 1.2; cx.stroke();
+    }
+  }
+  requestAnimationFrame(desenha);
+
+  atualizaGeral();
+  rota();
+})();
+</script>
+
+</body></html>

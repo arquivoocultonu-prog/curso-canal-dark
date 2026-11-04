@@ -1,0 +1,2 @@
+User-agent: *
+Disallow: /acesso-ca62cd5516/
