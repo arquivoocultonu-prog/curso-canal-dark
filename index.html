@@ -55,6 +55,9 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke
 
 .oferta{margin:40px auto 0;max-width:560px;background:var(--panel);border:1px solid color-mix(in srgb,var(--rh) 55%,var(--line));border-radius:20px;padding:28px 26px;text-align:center;position:relative}
 .oferta .tag{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--rh);color:#fff;font:600 11px/1 var(--mono);letter-spacing:.18em;padding:7px 12px;border-radius:999px;white-space:nowrap}
+.de{margin-top:10px;font-size:17px;color:var(--mute);display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.de s{color:#cfc8c0;text-decoration-color:var(--rh);text-decoration-thickness:2px}
+.de .off{background:var(--ok);color:#06140c;font:700 12px/1 var(--mono);letter-spacing:.08em;padding:5px 8px;border-radius:6px}
 .preco{font:400 clamp(54px,10vw,78px)/1 var(--display);margin-top:6px;font-variant-numeric:tabular-nums}
 .preco small{font-size:.42em;vertical-align:.95em;margin-right:4px;color:var(--mute)}
 .unico{font:600 12px/1.4 var(--mono);letter-spacing:.14em;color:var(--mute);text-transform:uppercase;margin-top:8px}
@@ -134,7 +137,8 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke
 
     <div class="oferta" id="oferta">
       <div class="tag">ACESSO VITALÍCIO</div>
-      <div class="kick" style="color:var(--mute)">Curso completo por apenas</div>
+      <div class="kick" style="color:var(--mute)">Preço promocional</div>
+      <div class="de">De <s>R$ 89,70</s> por <span class="off">57% OFF</span></div>
       <div class="preco"><small>R$</small>37,90</div>
       <div class="unico">Pagamento único · sem mensalidade</div>
       <div class="dia"><b>R$ 1,26</b><span>por dia no primeiro mês</span></div>
@@ -193,7 +197,7 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke
   <section class="wrap final">
     <div class="kick">Comece hoje</div>
     <h2>Seu canal dark em <span class="r">7 dias</span></h2>
-    <p>R$ 37,90 uma única vez, o mesmo que R$ 1,26 por dia no primeiro mês.</p>
+    <p>De <s>R$ 89,70</s> por R$ 37,90, uma única vez. O mesmo que R$ 1,26 por dia no primeiro mês.</p>
     <a class="bt comprar" href="#oferta" target="_blank" rel="noopener">Quero acessar agora</a>
   </section>
 
@@ -201,7 +205,7 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke
 </main>
 
 <div class="barra" id="barra"><div class="wrap">
-  <div class="v">R$ 37,90<small>pagamento único · R$ 1,26/dia no 1º mês</small></div>
+  <div class="v"><s style="font-size:.6em;color:var(--mute)">R$ 89,70</s> R$ 37,90<small>pagamento único · R$ 1,26/dia no 1º mês</small></div>
   <a class="bt peq comprar" href="#oferta" target="_blank" rel="noopener">Quero acessar</a>
 </div></div>
 <div class="aviso" id="aviso" role="status" aria-live="polite"></div>
