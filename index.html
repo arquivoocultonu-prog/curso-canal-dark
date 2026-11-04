@@ -62,7 +62,12 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke
 .preco{font:400 clamp(54px,10vw,78px)/1 var(--display);margin-top:6px;font-variant-numeric:tabular-nums}
 .preco small{font-size:.42em;vertical-align:.95em;margin-right:4px;color:var(--mute)}
 .unico{font:600 12px/1.4 var(--mono);letter-spacing:.14em;color:var(--mute);text-transform:uppercase;margin-top:8px}
-.taxa{font-size:13px;color:var(--mute);margin-top:6px}
+.taxa{font-size:12.5px;line-height:1.5;color:var(--mute);margin-top:10px}
+.preco .pd{font-size:.36em;color:var(--rh);margin-left:4px;letter-spacing:.02em}
+.real{margin-top:10px;font-size:17px;color:#e4ddd4;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.real b{font:400 26px/1 var(--display);color:var(--paper);font-weight:400;letter-spacing:.01em}
+.real s{color:var(--mute);text-decoration-color:var(--rh);text-decoration-thickness:2px}
+.real .off{background:var(--ok);color:#06140c;font:700 12px/1 var(--mono);letter-spacing:.08em;padding:5px 8px;border-radius:6px}
 .dia{margin:16px auto 0;display:inline-flex;align-items:baseline;gap:8px;background:color-mix(in srgb,var(--red) 18%,var(--panel2));border-radius:12px;padding:10px 16px}
 .dia b{font:400 30px/1 var(--display);color:var(--rh);font-weight:400}
 .dia span{font-size:15px;color:#e4ddd4}
@@ -140,11 +145,10 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke
     <div class="oferta" id="oferta">
       <div class="tag">ACESSO VITALÍCIO</div>
       <div class="kick" style="color:var(--mute)">Preço promocional</div>
-      <div class="de">De <s>R$ 89,70</s> por <span class="off">57% OFF</span></div>
-      <div class="preco"><small>R$</small>37,90</div>
-      <div class="unico">Pagamento único · sem mensalidade</div>
-      <div class="taxa">+ R$ 0,99 de taxa de serviço da plataforma de pagamento · total R$ 38,89</div>
-      <div class="dia"><b>R$ 1,26</b><span>por dia no primeiro mês</span></div>
+      <div class="preco"><small>R$</small>1,26<span class="pd">/dia*</span></div>
+      <div class="real">Pagamento único de <b>R$ 37,90</b> <s>R$ 89,70</s> <span class="off">57% OFF</span></div>
+      <div class="unico">Sem mensalidade · acesso vitalício</div>
+      <div class="taxa">+ R$ 0,99 de taxa de serviço da plataforma de pagamento · total R$ 38,89<br>*R$ 37,90 ÷ 30 dias</div>
       <a class="bt comprar" href="#oferta" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5"/></svg>Quero acessar agora</a>
       <div class="pagto">
         <span><svg class="i" viewBox="0 0 24 24"><path d="M12 3l4 4-4 4-4-4zM12 13l4 4-4 4-4-4zM3 12l4-4 4 4-4 4zM13 12l4-4 4 4-4 4z"/></svg>Pix</span>
@@ -198,7 +202,7 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke
   <section class="wrap final">
     <div class="kick">Comece hoje</div>
     <h2>Seu canal dark em <span class="r">7 dias</span></h2>
-    <p>De <s>R$ 89,70</s> por R$ 37,90, uma única vez. O mesmo que R$ 1,26 por dia no primeiro mês.<br><small>+ R$ 0,99 de taxa de serviço da plataforma de pagamento.</small></p>
+    <p>Menos de R$ 1,30 por dia: pagamento único de R$ 37,90 (de <s>R$ 89,70</s>).<br><small>+ R$ 0,99 de taxa de serviço da plataforma de pagamento.</small></p>
     <a class="bt comprar" href="#oferta" target="_blank" rel="noopener">Quero acessar agora</a>
   </section>
 
@@ -206,7 +210,7 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke
 </main>
 
 <div class="barra" id="barra"><div class="wrap">
-  <div class="v"><s style="font-size:.6em;color:var(--mute)">R$ 89,70</s> R$ 37,90<small>pagamento único · + R$ 0,99 de taxa</small></div>
+  <div class="v">R$ 1,26<span style="font-size:.55em;color:var(--rh)">/dia</span><small>pagamento único de R$ 37,90 · + R$ 0,99 de taxa</small></div>
   <a class="bt peq comprar" href="#oferta" target="_blank" rel="noopener">Quero acessar</a>
 </div></div>
 <div class="aviso" id="aviso" role="status" aria-live="polite"></div>
