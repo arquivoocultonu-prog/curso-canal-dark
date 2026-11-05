@@ -54,8 +54,6 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke
 .som:hover{background:var(--red)}
 @keyframes pulsa{50%{box-shadow:0 0 0 10px color-mix(in srgb,var(--rh) 0%,transparent),0 0 0 0 transparent}0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rh) 55%,transparent)}}
 
-.oferta{margin:40px auto 0;max-width:560px;background:var(--panel);border:1px solid color-mix(in srgb,var(--rh) 55%,var(--line));border-radius:20px;padding:28px 26px;text-align:center;position:relative}
-.oferta .tag{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--rh);color:#fff;font:600 11px/1 var(--mono);letter-spacing:.18em;padding:7px 12px;border-radius:999px;white-space:nowrap}
 .de{margin-top:10px;font-size:17px;color:var(--mute);display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
 .de s{color:#cfc8c0;text-decoration-color:var(--rh);text-decoration-thickness:2px}
 .de .off{background:var(--ok);color:#06140c;font:700 12px/1 var(--mono);letter-spacing:.08em;padding:5px 8px;border-radius:6px}
@@ -71,7 +69,6 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke
 .dia{margin:16px auto 0;display:inline-flex;align-items:baseline;gap:8px;background:color-mix(in srgb,var(--red) 18%,var(--panel2));border-radius:12px;padding:10px 16px}
 .dia b{font:400 30px/1 var(--display);color:var(--rh);font-weight:400}
 .dia span{font-size:15px;color:#e4ddd4}
-.oferta .bt{width:100%;margin-top:22px;font-size:18px;padding:18px}
 .pagto{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 18px;margin-top:16px;font:500 13px/1 var(--mono);color:var(--mute)}
 .pagto span{display:inline-flex;align-items:center;gap:6px}
 .seguro{font-size:13px;color:var(--mute);margin-top:12px}
@@ -123,7 +120,27 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke
 .aviso.on{opacity:1;transform:translate(-50%,0)}
 .sobe{animation:sobe .8s cubic-bezier(.2,.8,.2,1) backwards}
 @keyframes sobe{from{transform:translateY(18px)}}
-@media (max-width:560px){.som{right:8px;top:8px;padding:7px 12px;font-size:12px}.hero{padding-block:30px 20px}.hero .sub{font-size:16px}.oferta{padding:26px 18px}.garantia{padding:20px}}
+
+/* bloco de preço: título, preço grande, lista em 2 colunas, um botão, brilho vermelho embaixo */
+.oferta{position:relative;isolation:isolate;max-width:820px;margin:64px auto 0;padding:8px 0 64px;text-align:center}
+.oferta::before{content:"";position:absolute;left:0;right:0;bottom:0;height:75%;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 60% 85% at 50% 100%,color-mix(in srgb,var(--red) 55%,transparent) 0%,color-mix(in srgb,var(--red) 18%,transparent) 45%,transparent 75%)}
+.ot{font-size:clamp(34px,5vw,48px);line-height:1;letter-spacing:.02em}
+.os{color:var(--mute);font-size:clamp(16px,2.2vw,20px);margin:10px 0 0}
+.preco-n{display:flex;align-items:baseline;justify-content:center;gap:12px;margin-top:30px}
+.preco-n .v{font:400 clamp(64px,12vw,104px)/1 var(--display);background:linear-gradient(180deg,#ff7a6b 0%,var(--rh) 70%);-webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums}
+.preco-n .pd{font:400 clamp(24px,3.4vw,32px)/1 var(--display);color:var(--mute)}
+.real-n{margin-top:12px;color:#d9d2c9;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.real-n b{color:var(--paper)}
+.real-n s{color:var(--mute);text-decoration-color:var(--rh);text-decoration-thickness:2px}
+.real-n .off{background:var(--ok);color:#06140c;font:700 11px/1 var(--mono);letter-spacing:.08em;padding:5px 7px;border-radius:6px}
+.inc{list-style:none;padding:0;margin:34px auto 0;display:grid;grid-template-columns:repeat(2,max-content);gap:16px 64px;justify-content:center;text-align:left}
+.inc li{display:flex;align-items:center;gap:14px;font-size:16.5px;color:#e9e3da}
+.inc li::before{content:"";flex:none;width:24px;height:24px;border-radius:7px;background:linear-gradient(180deg,#ff6b5e,var(--rh)) center/100% no-repeat;-webkit-mask:none;box-shadow:0 2px 10px -2px color-mix(in srgb,var(--rh) 70%,transparent);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6.5 12.5l3.5 3.5 7.5-8' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"),linear-gradient(180deg,#ff6b5e,#ee1c25)}
+.bt.claro{background:var(--paper);color:var(--ink);box-shadow:0 14px 34px -12px rgba(0,0,0,.8);margin-top:38px;padding:17px 34px;font-size:17px}
+.bt.claro:hover{background:#fff}
+.letras{max-width:560px;margin:20px auto 0;font-size:12.5px;line-height:1.6;color:var(--mute)}
+@media (max-width:560px){.inc{grid-template-columns:repeat(2,auto);gap:13px 18px;justify-content:center}.inc li{font-size:14px;gap:9px}.inc li::before{width:20px;height:20px;border-radius:6px}.oferta{margin-top:44px}}
+@media (max-width:560px){.som{right:8px;top:8px;padding:7px 12px;font-size:12px}.hero{padding-block:30px 20px}.hero .sub{font-size:16px}.garantia{padding:20px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 
@@ -143,17 +160,24 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke
     </div>
 
     <div class="oferta" id="oferta">
-      <div class="tag">ACESSO VITALÍCIO</div>
-      <div class="kick" style="color:var(--mute)">Preço promocional</div>
-      <div class="preco"><small>R$</small>1,26<span class="pd">/dia*</span></div>
-      <div class="real">Pagamento único de <b>R$ 37,90</b> <s>R$ 89,70</s> <span class="off">57% OFF</span></div>
-      <div class="unico">Sem mensalidade · acesso vitalício</div>
-      <div class="taxa">+ R$ 0,99 de taxa de serviço da plataforma de pagamento · total R$ 38,89<br>*R$ 37,90 ÷ 30 dias</div>
-      <a class="bt comprar" href="#oferta" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5"/></svg>Quero acessar agora</a>
-      <div class="pagto">
-        <span><svg class="i" viewBox="0 0 24 24"><path d="M12 3l4 4-4 4-4-4zM12 13l4 4-4 4-4-4zM3 12l4-4 4 4-4 4zM13 12l4-4 4 4-4 4z"/></svg>Pix</span>
-        <span><svg class="i" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h4"/></svg>Cartão</span>      </div>
-      <p class="seguro">Pagamento processado com segurança pela plataforma de pagamento. Assim que for confirmado, você é levado direto para o curso.</p>
+      <h2 class="ot">ACESSO COMPLETO</h2>
+      <p class="os">Tudo para criar seu canal dark, sem aparecer e sem mensalidade</p>
+      <div class="preco-n"><span class="v">R$ 1,26</span><span class="pd">/dia*</span></div>
+      <div class="real-n">Pagamento único de <b>R$ 37,90</b> · de <s>R$ 89,70</s> <span class="off">57% OFF</span></div>
+      <ul class="inc">
+        <li>7 módulos</li>
+        <li>33 aulas práticas</li>
+        <li>35 prompts prontos</li>
+        <li>7 videoaulas curtas</li>
+        <li>Apostilas em PDF</li>
+        <li>Tarefas de 15 min</li>
+        <li>Acesso vitalício</li>
+        <li>Sem mensalidade</li>
+        <li>Pix ou cartão</li>
+        <li>7 dias para desistir</li>
+      </ul>
+      <a class="bt claro comprar" href="#oferta" target="_blank" rel="noopener">Quero acessar agora</a>
+      <p class="letras">+ R$ 0,99 de taxa de serviço da plataforma de pagamento (total R$ 38,89) · *R$ 37,90 ÷ 30 dias<br>Pagamento processado com segurança. Assim que for confirmado, você é levado direto para o curso.</p>
     </div>
   </section>
 
